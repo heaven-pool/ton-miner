@@ -58,10 +58,6 @@ run_pak() {
     zip
 }
 
-deploy() {
-    git clone https://gitlab+deploy-token-687464:jVuAhU79dzUCztiZYsBd@gitlab.com/qwedsazxc78/miner
-}
-
 copy(){
     scp x9HJxXms2odJnRmFF7YELrjzE0A4xQAD8ph76qFI@shell.hiveos.farm:/hive/miners/custom/test_build/miner/ton-heaven-pool* .
 }
