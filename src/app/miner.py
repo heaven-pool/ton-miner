@@ -1,9 +1,10 @@
 import queue
 import threading
 import time
+import sys
 
 from loguru import logger
-import init
+import config
 
 sleep_time = 1
 
@@ -61,7 +62,7 @@ def create_worker(num: str, queue: queue.Queue):
 
 
 if __name__ == '__main__':
-    env_args = init.config(sys.argv)
+    env_args = config.init(sys.argv)
     # miner = init.init(env_args)
     # logger.debug(miner)
 

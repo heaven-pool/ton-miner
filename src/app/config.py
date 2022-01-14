@@ -5,10 +5,11 @@ import sys
 import pyopencl as cl
 from loguru import logger
 
-version = "0.1.0"
+VERSION: str = "0.1.0"
 
 
 def init(env):
+    # sys.argv
     # log init
     if env.DEBUG:
         log_level = 'DEBUG'
