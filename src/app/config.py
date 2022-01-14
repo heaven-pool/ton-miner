@@ -1,63 +1,32 @@
 import argparse
 import os
 import sys
-
 import pyopencl as cl
+from datetime import datetime
 from loguru import logger
 
 VERSION: str = "0.1.0"
 
 
-def init(env):
-    # sys.argv
-    # log init
-    if env.DEBUG:
-        log_level = 'DEBUG'
-    elif env.SILENT:
-        log_level = 'WARNING'
-    else:
-        log_level = 'INFO'
-    logger.add(sys.stderr, level=log_level)
-    logger.add("mining.log")
-
-    # GPUs info init
-    try:
-        platforms = cl.get_platforms()
-    except cl.LogicError:
-        logger.warning('Failed to get OpenCL platforms, check your graphics card drivers')
-        os._exit(0)
-
-    devices = platforms[0].get_devices()
-    for i, device in enumerate(devices):
-        logger.info('    Device %d: %s' % (i, get_device_id(device)))
-
-    miner = model.MinerSchema(pool_url=env.pool, miner_wallet=env.wallet, GPUs=devices)
-    return miner
-
-
-def config(run_args):
+def arg_parser(run_args):
     parser = argparse.ArgumentParser()
-    parser.add_argument('--stats', dest='STATS', action='store_true', help='Dump stats to stats.json')
     parser.add_argument('--debug', dest='DEBUG', action='store_true', help='Show all logs')
+    parser.add_argument('--stats', dest='STATS', action='store_true', help='Dump stats to stats.json')
     parser.add_argument('pool', help='Pool URL')
     parser.add_argument('wallet', help='Your wallet address')
     return parser.parse_args(run_args)
 
 
-def info():
-    logger.info(f'Miner info: {version}')
-    logger.info(f'runtime argument : {run_args}')
-    try:
-        platforms = cl.get_platforms()
-    except cl.LogicError:
-        logger.info('Failed to get OpenCL platforms, check your graphics card drivers')
-        os._exit(0)
-    for i, platform in enumerate(platforms):
-        logger.info('Platform %d:' % i)
-        for j, device in enumerate(platform.get_devices()):
-            logger.info('    Device %d: %s' % (j, get_device_id(device)))
-
-    logger.info('Usage: %s [pool url] [wallet address]' % args[0])
+def init_logger(run_params):
+    now = datetime.now()
+    if run_params.DEBUG:
+        log_level = 'DEBUG'
+    else:
+        log_level = 'INFO'
+    logger.remove()
+    logger.add(sys.stdout, level=log_level)
+    logger.add(f"miner_{now.strftime('%Y-%m-%dT%H-%M-%S')}.log", level=log_level)
+    logger.add(f"miner_{now.strftime('%Y-%m-%dT%H-%M-%S')}.err", level="WARNING")
 
 
 def get_device_id(device):
@@ -76,12 +45,36 @@ def get_device_id(device):
     return name
 
 
-try:
-    platforms = cl.get_platforms()
-except cl.LogicError:
-    print('failed to get OpenCL platforms, check your graphics card drivers')
-    os._exit(0)
-for i, platform in enumerate(platforms):
-    print('Platform %d:' % i)
-    for j, device in enumerate(platform.get_devices()):
-        print('    Device %d: %s' % (j, get_device_id(device)))
+def opencl_devices():
+    try:
+        platforms = cl.get_platforms()
+    except cl.LogicError:
+        logger.warning('Failed to get OpenCL platforms, check your graphics card drivers')
+        os._exit(255)
+
+    devices = []
+    for i, platform in enumerate(platforms):
+        logger.info('Platform %d:' % i)
+        for j, device in enumerate(platform.get_devices()):
+            logger.info('    Device %d: %s' % (j, get_device_id(device)))
+            devices.append(device)
+
+    return devices
+
+
+def print_info(run_params):
+    logger.info(f'Miner info: {VERSION}')
+    logger.info(f'Debug mode: {run_params.DEBUG}')
+    logger.info(f'Stats mode: {run_params.STATS}')
+    logger.info(f'Pool URL: {run_params.pool}')
+    logger.info(f'Wallet address: {run_params.wallet}')
+
+
+def init(argv):
+    params = arg_parser(argv)
+    init_logger(params)
+    devices = opencl_devices()
+    print_info()
+
+    miner = model.MinerSchema(pool_url=params.pool, miner_wallet=params.wallet, GPUs=devices)
+    return miner
