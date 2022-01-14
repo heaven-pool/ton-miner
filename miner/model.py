@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 class MinerSchema(BaseModel):
     pool_wallet: Optional[bytes] = b"EQB6UzwFx-gZTIZmJmiFWZ7_qTIZ9RwBaR1_2IPtKR4UuAoJ"
-    pool_url: str = 'https://mining-mission.rich-thinking.com'
+    pool_url: str = 'https://ton.heaven-pool.com'
     miner_wallet: bytes
     unique_id: bytes = hex(uuid.getnode())  # mac address
     GPUs: List[str]

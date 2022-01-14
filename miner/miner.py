@@ -60,20 +60,19 @@ def create_worker(num: str, queue: queue.Queue):
 
 
 if __name__ == '__main__':
-    # run_args = init.helper(sys.argv)
-    # env_args = init.config(run_args)
+    env_args = init.config(sys.argv)
     # miner = init.init(env_args)
     # logger.debug(miner)
 
-    device_num = 4
-    task_queue = queue.Queue()
-    job_manager = create_job_manager(task_queue)
-    work_pools = create_worker(device_num, task_queue)
+    # device_num = 4
+    # task_queue = queue.Queue()
+    # job_manager = create_job_manager(task_queue)
+    # work_pools = create_worker(device_num, task_queue)
 
-    try:
-        while True:
-            time.sleep(sleep_time)
-    except Exception as e:
-        logger.warning(f"Exception: {e}")
-    except KeyboardInterrupt:
-        logger.info("Exit the program")
+    # try:
+    #     while True:
+    #         time.sleep(sleep_time)
+    # except Exception as e:
+    #     logger.warning(f"Exception: {e}")
+    # except KeyboardInterrupt:
+    #     logger.info("Exit the program")
