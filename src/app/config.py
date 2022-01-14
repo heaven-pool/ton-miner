@@ -34,12 +34,12 @@ def get_device_id(device):
     try:
         bus = device.get_info(0x4008)
         slot = device.get_info(0x4009)
-        return name + ' on PCI bus %d slot %d' % (bus, slot)
+        return f'{name} on PCI bus {bus} slot {slot}'
     except cl.LogicError:
         pass
     try:
         topo = device.get_info(0x4037)
-        return name + ' on PCI bus %d device %d function %d' % (topo.bus, topo.device, topo.function)
+        return f'{name} on PCI bus {topo.bus} device {topo.device} function {topo.function}'
     except cl.LogicError:
         pass
     return name
@@ -54,9 +54,9 @@ def opencl_devices():
 
     devices = []
     for i, platform in enumerate(platforms):
-        logger.info('Platform %d:' % i)
+        logger.debug(f'Platform {platform.name}:')
         for j, device in enumerate(platform.get_devices()):
-            logger.info('    Device %d: %s' % (j, get_device_id(device)))
+            logger.debug(f'    Device {j}: {get_device_id(device)}')
             devices.append(device)
 
     return devices
@@ -73,8 +73,8 @@ def print_info(run_params):
 def init(argv):
     params = arg_parser(argv)
     init_logger(params)
-    devices = opencl_devices()
-    print_info()
+    print_info(params)
 
+    devices = opencl_devices()
     miner = model.MinerSchema(pool_url=params.pool, miner_wallet=params.wallet, GPUs=devices)
     return miner
