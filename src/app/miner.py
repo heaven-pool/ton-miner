@@ -3,6 +3,7 @@ import threading
 import time
 
 from loguru import logger
+import init
 
 sleep_time = 1
 
@@ -37,7 +38,6 @@ class JobManager(threading.Thread):
                 for i in range(8):
                     task_queue.put("Data %d" % i)
                 logger.info("JobManager Thread %d - queue size %d" % (self.num, size))
-
             time.sleep(1)
 
 
@@ -50,6 +50,7 @@ def create_job_manager(queue: queue.Queue):
 
 def create_worker(num: str, queue: queue.Queue):
     worker_pool = []
+
     for i in range(num):
         worker = Worker(queue, i)
         worker.setDaemon(True)
