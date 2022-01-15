@@ -21,12 +21,12 @@ hiveos_env() {
 }
 
 run_py() {
+    cd src/app
     python3 miner.py ${URL} ${WALLET}
-    # python3 miner.py https://mining-mission.rich-thinking.com EQB6UzwFx-gZTIZmJmiFWZ7_qTIZ9RwBaR1_2IPtKR4UuAoJ --debug
-    # python3 miner.py https://next.ton-pool.com EQB6UzwFx-gZTIZmJmiFWZ7_qTIZ9RwBaR1_2IPtKR4UuAoJ --debug
 }
 
 run_bin() {
+    cd src/app
     ./bin/miner-linux ${URL} ${WALLET}
 }
 
@@ -35,7 +35,6 @@ run_build() {
     mkdir ./bin
     cp ./config/* ./bin/
 
-    # git clone https://github.com/TON-Pool/miner.git
     pyinstaller --clean --onefile --add-data "hash_solver.cl:." --add-data "sha256.cl:." --name miner-linux miner.py
     cp ./dist/miner-linux ./bin/miner-linux
 }

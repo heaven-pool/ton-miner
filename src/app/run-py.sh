@@ -1,1 +1,0 @@
-python3 miner.py EQB6UzwFx-gZTIZmJmiFWZ7_qTIZ9RwBaR1_2IPtKR4UuAoJ
