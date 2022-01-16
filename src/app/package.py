@@ -96,11 +96,11 @@ def unzip_folder(src_folder: str, dst_folder: str):
 
     for file in files:
         if file.split('.')[-1] == 'zip':
-            # zf.extractall(dst_folder)
             unzip_each_file(file, dst_folder)
-
         elif file.split('.')[-1] == 'gz':
             untar_each_file(file, dst_folder)
+        else:
+            print('file type error')
 
 def remove_patten_files(dst_folder: str, pattern: str ='tonlib*'):
     files = glob.glob(f"{dst_folder}/{pattern}")

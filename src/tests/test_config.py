@@ -2,15 +2,10 @@
 import os
 from pathlib import Path
 
-import model
+from app import config
 
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = (os.path.dirname(os.path.abspath(__file__)))
-DATA_DIR = Path(BASE_DIR, 'data')
-
-
-def test_miner_model():
-
+def test_init():
+    argument = ""
     config_file = Path(DATA_DIR, "miner.json")
     model_data = model.MinerSchema.parse_file(config_file)
 

@@ -4,6 +4,7 @@ import sys
 import pyopencl as cl
 from datetime import datetime
 from loguru import logger
+import model
 
 VERSION: str = "0.1.0"
 
@@ -12,7 +13,7 @@ def arg_parser(run_args):
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', dest='DEBUG', action='store_true', help='Show all logs')
     parser.add_argument('--stats', dest='STATS', action='store_true', help='Dump stats to stats.json')
-    parser.add_argument('pool', help='Pool URL')
+    parser.add_argument('--pool',  type=str, default="https://ton.heaven-pool.com", help='Pool URL')
     parser.add_argument('wallet', help='Your wallet address')
     return parser.parse_args(run_args)
 
@@ -26,7 +27,7 @@ def init_logger(run_params):
     logger.remove()
     logger.add(sys.stdout, level=log_level)
     logger.add(f"miner_{now.strftime('%Y-%m-%dT%H-%M-%S')}.log", level=log_level)
-    logger.add(f"miner_{now.strftime('%Y-%m-%dT%H-%M-%S')}.err", level="WARNING")
+    logger.add(f"miner_{now.strftime('%Y-%m-%dT%H-%M-%S')}.err.log", level="WARNING")
 
 
 def get_device_id(device):
@@ -54,11 +55,13 @@ def opencl_devices():
 
     devices = []
     for i, platform in enumerate(platforms):
-        logger.debug(f'Platform {platform.name}:')
+        logger.info(f'Platform {platform.name}:')
         for j, device in enumerate(platform.get_devices()):
-            logger.debug(f'    Device {j}: {get_device_id(device)}')
-            devices.append(device)
-
+            logger.info(f'    Device {j}: {get_device_id(device)}')
+            if platform.name == "NVIDIA CUDA" or platform.name == "AMD OPENCL":
+                devices.append(get_device_id(device))
+            else:
+                logger.info(f'Exclude Device {j}: {get_device_id(device)}')
     return devices
 
 
@@ -76,5 +79,6 @@ def init(argv):
     print_info(params)
 
     devices = opencl_devices()
+    logger.info(devices)
     miner = model.MinerSchema(pool_url=params.pool, miner_wallet=params.wallet, GPUs=devices)
     return miner

@@ -62,7 +62,7 @@ def create_worker(num: str, queue: queue.Queue):
 
 
 if __name__ == '__main__':
-    env_args = config.init(sys.argv)
+    env_args = config.init(sys.argv[1:])
     # miner = init.init(env_args)
     # logger.debug(miner)
 
