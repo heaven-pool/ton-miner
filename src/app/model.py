@@ -19,21 +19,19 @@ class MinerSchema(BaseModel):
 
 class JobSchema(BaseModel):
     job_id: int
-    pool_wallet: bytes  # pool wallet
+    pool_wallet: str  # pool wallet
     expire: int
-    complexity: bytes
+    complexity: str
     seed: str
     iterations: int
-    giver_address: bytes
+    giver_address: str
 
 class JobResultSchema(BaseModel):
     job_id: int
-    complexity: str
-    seed: str
-    giver_address: str
-    unique_id: str
-    gpu_uuid: str
+    wallet: str
     computer_name: str
+    computer_uuid: str
+    gpu_uuid: str
     hashrate: int
     boc: str
 
