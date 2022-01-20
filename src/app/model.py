@@ -26,6 +26,16 @@ class JobSchema(BaseModel):
     iterations: int
     giver_address: bytes
 
+class JobResultSchema(BaseModel):
+    job_id: int
+    complexity: str
+    seed: str
+    giver_address: str
+    unique_id: str
+    gpu_uuid: str
+    computer_name: str
+    hashrate: int
+    boc: str
 
 class MineCmdSchema(BaseModel):
     job_id: int
@@ -45,9 +55,3 @@ class MineCmdSchema(BaseModel):
         cmd += f'{self.pool_wallet} {self.seed} {self.complexity} {self.iterations} '
         cmd += f'{self.giver_address} {self.boc_name} '
         return cmd
-
-
-class JobResultSchema(BaseModel):
-    job_id: int
-    status: str
-    file_name: str
