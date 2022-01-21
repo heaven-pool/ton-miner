@@ -1,4 +1,6 @@
+from datetime import datetime
 import queue
+import random
 import threading
 import time
 import sys
@@ -17,35 +19,41 @@ class Worker(threading.Thread):
 
     def run(self):
         while True:
-            size = self.queue.qsize()
-            if size > 0:
-                msg = self.queue.get()
-                logger.info(f"Worker {self.id}: {msg} / queue {size}")
+            if self.queue.empty():
+                job = self.queue.get()
+                logger.info(f"Worker {self.id}: {job.seed} / {job.complexity} / {job.iterations} / {job.giver_address}")
+                time.sleep(random.randint(15, 20))
             else:
                 logger.info(f"Worker Idle {self.id}")
-            time.sleep(1)
+            time.sleep(0.1)
 
 
 class JobManager(threading.Thread):
-    def __init__(self, miner, queue):
+    def __init__(self, miner, queue, job_expiration):
         threading.Thread.__init__(self)
         self.miner = miner
         self.queue = queue
-        self.id = 0
+        self.job_expiration = job_expiration
 
     def run(self):
+        ts = datetime.now()
         while True:
-            size = self.queue.qsize()
-            if size < 4:
-                for i in range(8):
-                    logger.debug(sender.job(miner))
-                    task_queue.put(f"Data {i}")
-                logger.info(f"JobManager Thread {self.id} - queue size {size}")
+            if (datetime.now()-ts).total_seconds() > self.job_expiration:
+                while not self.queue.empty():
+                    self.queue.get()
+                for i in range(len(self.miner.devices)):
+                    self.queue.put(sender.job(self.miner))
+                ts = datetime.now()
+            elif self.queue.qsize() < len(self.miner.devices):
+                for i in range(self.queue.qsize(), len(self.miner.devices)):
+                    self.queue.put(sender.job(self.miner))
+                ts = datetime.now()
+            logger.debug(f"Job in queue: {self.queue.qsize()}")
             time.sleep(1)
 
 
-def create_job_manager(miner: model.MinerSchema, queue: queue.Queue):
-    job_mgr = JobManager(miner, queue)
+def create_job_manager(miner: model.MinerSchema, queue: queue.Queue, job_expiration: int):
+    job_mgr = JobManager(miner, queue, job_expiration)
     job_mgr.setDaemon(True)
     job_mgr.start()
     return job_mgr
@@ -82,7 +90,7 @@ if __name__ == "__main__":
     logger.debug(miner)
 
     task_queue = queue.Queue()
-    job_manager = create_job_manager(miner, task_queue)
+    job_manager = create_job_manager(miner, task_queue, 10)
     work_pools = create_worker(miner, task_queue)
 
     graceful = Graceful()
