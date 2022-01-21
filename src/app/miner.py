@@ -5,6 +5,8 @@ import sys
 
 from loguru import logger
 import config
+import model
+import sender
 
 sleep_time = 1
 
@@ -27,8 +29,9 @@ class Worker(threading.Thread):
 
 
 class JobManager(threading.Thread):
-    def __init__(self, queue, num):
+    def __init__(self, miner, queue, num):
         threading.Thread.__init__(self)
+        logger.debug(sender.job(miner))
         self.queue = queue
         self.num = num
 
@@ -42,8 +45,8 @@ class JobManager(threading.Thread):
             time.sleep(1)
 
 
-def create_job_manager(queue: queue.Queue):
-    job_mgr = JobManager(queue, 1)
+def create_job_manager(miner: model.MinerSchema, queue: queue.Queue):
+    job_mgr = JobManager(miner, queue, 1)
     job_mgr.setDaemon(True)
     job_mgr.start()
     return job_mgr
@@ -62,13 +65,12 @@ def create_worker(num: str, queue: queue.Queue):
 
 
 if __name__ == '__main__':
-    env_args = config.init(sys.argv[1:])
-    # miner = init.init(env_args)
-    # logger.debug(miner)
+    miner = config.init(sys.argv[1:])
+    logger.debug(miner)
 
     # device_num = 4
-    # task_queue = queue.Queue()
-    # job_manager = create_job_manager(task_queue)
+    task_queue = queue.Queue()
+    job_manager = create_job_manager(miner, task_queue)
     # work_pools = create_worker(device_num, task_queue)
 
     # try:
