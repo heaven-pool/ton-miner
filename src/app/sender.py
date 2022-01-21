@@ -6,8 +6,8 @@ import requests
 from loguru import logger
 
 REGISTRY_API = '/registry'
-JOB_API = '/job/'
-UPDATE_API = '/job/update/'
+JOB_API = '/job'
+SUBMIT_API = '/submit'
 
 
 def registry(miner: model.MinerSchema):
@@ -38,13 +38,12 @@ def job(miner: model.MinerSchema) -> model.JobSchema:
     except Exception as e:
         logger.warning('Failed to connect to pool: ' + str(e))
 
-    miner_job = model.JobSchema(response)
-    logger.debug('miner_job: ' + miner_job)
-    return miner_job
+    job = model.JobSchema.parse_obj(response)
+    return job
 
 
-def update(miner: model.MinerSchema, result: model.JobResultSchema):
-    api_url = urljoin(miner.pool_url, UPDATE_API)
+def submit(miner: model.MinerSchema, result: model.JobResultSchema):
+    api_url = urljoin(miner.pool_url, SUBMIT_API)
     logger.debug('api_url: ' + api_url)
 
     try:

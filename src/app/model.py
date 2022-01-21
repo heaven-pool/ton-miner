@@ -19,10 +19,9 @@ class MinerSchema(BaseModel):
 class JobSchema(BaseModel):
     job_id: int
     pool_wallet: str
-    expire: int
     complexity: str
     seed: str
-    iterations: int
+    iterations: str
     giver_address: str
 
 
