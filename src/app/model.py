@@ -6,8 +6,7 @@ from pydantic import BaseModel
 
 
 class MinerSchema(BaseModel):
-    pool_wallet: str = "EQB6UzwFx-gZTIZmJmiFWZ7_qTIZ9RwBaR1_2IPtKR4UuAoJ"
-    pool_url: str = 'https://ton.heaven-pool.com'
+    pool_url: str
     miner_wallet: str
     unique_id: bytes = hex(uuid.getnode())  # mac address
     GPUs: List[str]
@@ -19,20 +18,23 @@ class MinerSchema(BaseModel):
 
 class JobSchema(BaseModel):
     job_id: int
+    pool_wallet: str
     expire: int
     complexity: str
     seed: str
     iterations: int
     giver_address: str
 
+
 class JobResultSchema(BaseModel):
     job_id: int
-    wallet: str
+    miner_wallet: str
     computer_name: str
     computer_uuid: str
     gpu_uuid: str
     hashrate: int
     boc: str
+
 
 class MineCmdSchema(BaseModel):
     job_id: int
