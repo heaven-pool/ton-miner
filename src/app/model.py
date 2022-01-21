@@ -9,7 +9,7 @@ class MinerSchema(BaseModel):
     pool_url: str
     miner_wallet: str
     unique_id: bytes = hex(uuid.getnode())  # mac address
-    GPUs: List[str]
+    devices: List[str]
 
     def _get_mac(self) -> bytes:
         self.unique_id = hex(uuid.getnode())
@@ -49,7 +49,7 @@ class MineCmdSchema(BaseModel):
     boc_name: str
 
     def _cmd(self):
-        cmd = f'-v -g {self.gpu_id} -F {self.boost_factor} -t {self.timeout} -e {self.expire} '
-        cmd += f'{self.pool_wallet} {self.seed} {self.complexity} {self.iterations} '
-        cmd += f'{self.giver_address} {self.boc_name} '
+        cmd = f"-v -g {self.gpu_id} -F {self.boost_factor} -t {self.timeout} -e {self.expire} "
+        cmd += f"{self.pool_wallet} {self.seed} {self.complexity} {self.iterations} "
+        cmd += f"{self.giver_address} {self.boc_name} "
         return cmd
