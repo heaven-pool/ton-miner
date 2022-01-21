@@ -2,13 +2,11 @@ import queue
 import threading
 import time
 import sys
-
+import signal
 from loguru import logger
 import config
 import model
 import sender
-
-sleep_time = 1
 
 
 class Worker(threading.Thread):
@@ -64,19 +62,31 @@ def create_worker(num: str, queue: queue.Queue):
     return worker_pool
 
 
+class Graceful:
+    rip = False
+
+    def __init__(self):
+        signal.signal(signal.SIGHUP, self.you_may_die)
+        signal.signal(signal.SIGABRT, self.you_may_die)
+        signal.signal(signal.SIGINT, self.you_may_die)
+        signal.signal(signal.SIGQUIT, self.you_may_die)
+        signal.signal(signal.SIGTERM, self.you_may_die)
+
+    def you_may_die(self, *args):
+        self.rip = True
+
+
 if __name__ == '__main__':
     miner = config.init(sys.argv[1:])
     logger.debug(miner)
 
-    # device_num = 4
     task_queue = queue.Queue()
     job_manager = create_job_manager(miner, task_queue)
-    # work_pools = create_worker(device_num, task_queue)
+    work_pools = create_worker(len(miner.GPUs), task_queue)
 
-    # try:
-    #     while True:
-    #         time.sleep(sleep_time)
-    # except Exception as e:
-    #     logger.warning(f"Exception: {e}")
-    # except KeyboardInterrupt:
-    #     logger.info("Exit the program")
+    graceful = Graceful()
+    while not graceful.rip:
+        time.sleep(1)
+
+    logger.info("Interrupted...")
+    logger.info("Exiting...")
