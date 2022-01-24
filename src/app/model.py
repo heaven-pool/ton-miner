@@ -3,17 +3,19 @@ import uuid
 from typing import List, Optional
 
 from pydantic import BaseModel
+import platform
 
 
 class MinerSchema(BaseModel):
     pool_url: str
     miner_wallet: str
-    unique_id: bytes = hex(uuid.getnode())  # mac address
+    computer_name: str = platform.node()
+    computer_uuid: bytes = hex(uuid.getnode())  # mac address
     devices: List[str]
 
     def _get_mac(self) -> bytes:
-        self.unique_id = hex(uuid.getnode())
-        return self.unique_id
+        self.computer_uuid = hex(uuid.getnode())
+        return self.computer_uuid
 
 
 class JobSchema(BaseModel):

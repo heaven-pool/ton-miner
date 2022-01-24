@@ -11,5 +11,5 @@ def test_init():
 
     assert model_data.pool_wallet == b"EQB6UzwFx-gZTIZmJmiFWZ7_qTIZ9RwBaR1_2IPtKR4UuAoJ"
     assert model_data.miner_wallet == b"EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq"
-    assert model_data.unique_id == b"0x1e0062221865"
+    assert model_data.computer_uuid == b"0x1e0062221865"
     assert "1" in model_data.GPUs
