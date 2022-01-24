@@ -1,19 +1,22 @@
 from datetime import datetime
 import queue
-import random
 import threading
 import time
 import sys
 import signal
 from loguru import logger
+import platform
 import config
+import os
+import subprocess
 import model
 import sender
 
 
 class Worker(threading.Thread):
-    def __init__(self, queue, id):
+    def __init__(self, miner, queue, id):
         threading.Thread.__init__(self)
+        self.miner = miner
         self.queue = queue
         self.id = id
 
@@ -22,7 +25,20 @@ class Worker(threading.Thread):
             if not self.queue.empty():
                 job = self.queue.get()
                 logger.info(f"Worker {self.id}: {job.seed} / {job.complexity} / {job.iterations} / {job.giver_address}")
-                time.sleep(random.randint(15, 20))
+                print(os.path.dirname(os.path.realpath(__file__)))
+                subprocess.run([
+                    os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../bin/window/pow-miner-cuda.exe'),
+                    '-vv',
+                    f'-g{self.id}',
+                    '-F16',
+                    '-t10',
+                    job.pool_wallet,
+                    job.seed,
+                    job.complexity,
+                    job.iterations,
+                    job.giver_address,
+                    f'mined-{self.id}.boc'
+                ])
             else:
                 logger.info(f"Worker Idle {self.id}")
             time.sleep(0.1)
@@ -63,7 +79,7 @@ def create_worker(miner: model.MinerSchema, queue: queue.Queue):
     worker_pool = []
 
     for i in range(len(miner.devices)):
-        worker = Worker(queue, i)
+        worker = Worker(miner, queue, i)
         worker.setDaemon(True)
         worker.start()
         worker_pool.append(worker)
@@ -75,10 +91,12 @@ class Graceful:
     rip = False
 
     def __init__(self):
-        signal.signal(signal.SIGHUP, self.you_may_die)
+        os_name = platform.system()
+        if os_name == 'Linux' or os_name == 'Darwin':
+            signal.signal(signal.SIGHUP, self.you_may_die)
+            signal.signal(signal.SIGQUIT, self.you_may_die)
         signal.signal(signal.SIGABRT, self.you_may_die)
         signal.signal(signal.SIGINT, self.you_may_die)
-        signal.signal(signal.SIGQUIT, self.you_may_die)
         signal.signal(signal.SIGTERM, self.you_may_die)
 
     def you_may_die(self, *args):
