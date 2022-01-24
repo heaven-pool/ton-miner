@@ -31,7 +31,7 @@ class JobResultSchema(BaseModel):
     computer_name: str
     computer_uuid: str
     gpu_uuid: str
-    hashrate: int
+    hash_rate: int
     boc: str
 
 
