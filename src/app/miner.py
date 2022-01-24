@@ -19,7 +19,7 @@ class Worker(threading.Thread):
 
     def run(self):
         while True:
-            if self.queue.empty():
+            if not self.queue.empty():
                 job = self.queue.get()
                 logger.info(f"Worker {self.id}: {job.seed} / {job.complexity} / {job.iterations} / {job.giver_address}")
                 time.sleep(random.randint(15, 20))
