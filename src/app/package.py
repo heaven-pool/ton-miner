@@ -18,20 +18,20 @@ HIVEOS_BASE_URL = f'https://github.com/tontechio/pow-miner-gpu-hiveos/releases/d
 MINER_TOOLS = {
     'windows': [
         f'{BASE_URL}/minertools-cuda-windows-x86-64.zip',
-        f'{BASE_URL}/minertools-opencl-windows-x86-64.zip'
+        f'{BASE_URL}/minertools-opencl-windows-x86-64.zip',
     ],
     'ubuntu18': [
         f'{BASE_URL}/minertools-cuda-ubuntu-18.04-x86-64.tar.gz',
-        f'{BASE_URL}/minertools-opencl-ubuntu-18.04-x86-64.tar.gz'
+        f'{BASE_URL}/minertools-opencl-ubuntu-18.04-x86-64.tar.gz',
     ],
     'ubuntu20': [
         f'{BASE_URL}/minertools-cuda-ubuntu-20.04-x86-64.tar.gz',
-        f'{BASE_URL}/minertools-opencl-ubuntu-20.04-x86-64.tar.gz'
+        f'{BASE_URL}/minertools-opencl-ubuntu-20.04-x86-64.tar.gz',
     ],
     'hiveos': [
         f'{HIVEOS_BASE_URL}/tonminer_opencl_hiveos_x86_64-{HIVEOS_VERSION}.tar.gz',
-        f'{HIVEOS_BASE_URL}/tonminer_cuda_hiveos_x86_64-{HIVEOS_VERSION}.tar.gz'
-    ]
+        f'{HIVEOS_BASE_URL}/tonminer_cuda_hiveos_x86_64-{HIVEOS_VERSION}.tar.gz',
+    ],
 }
 
 IGNORE_PATTENS = ['*.sh', 'tonlib*', '*.service', 'release.json', '*.conf', '*.json', '*.md']
@@ -58,6 +58,27 @@ def get_os_type():
             NotImplementedError(uname)
     else:
         NotImplementedError(uname)
+
+
+def get_path(bin: str) -> Path:
+    os_type = get_os_type()
+
+    if os_type == 'windows':
+        bin += '.exe'
+
+    return Path(PROJECT_ROOT_PATH, 'bin', os_type, bin)
+
+
+def lite_client_path() -> Path:
+    return get_path('lite-client')
+
+
+def miner_cuda_path() -> Path:
+    return get_path('pow-miner-cuda')
+
+
+def miner_opencl_path() -> Path:
+    return get_path('pow-miner-opencl')
 
 
 def download_url(url, dst_folder, chunk_size=128):

@@ -11,6 +11,7 @@ import os
 import subprocess
 import model
 import sender
+import package
 
 
 class Worker(threading.Thread):
@@ -25,9 +26,13 @@ class Worker(threading.Thread):
             if not self.queue.empty():
                 job = self.queue.get()
                 logger.info(f"Worker {self.id}: {job.seed} / {job.complexity} / {job.iterations} / {job.giver_address}")
-                print(os.path.dirname(os.path.realpath(__file__)))
+
+                print(package.miner_cuda_path())
+                print(package.miner_opencl_path())
+                print(package.lite_client_path())
+
                 subprocess.run([
-                    os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../bin/window/pow-miner-cuda.exe'),
+                    package.miner_cuda_path(),
                     '-vv',
                     f'-g{self.id}',
                     '-F16',
