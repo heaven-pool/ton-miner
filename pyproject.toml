@@ -5,7 +5,7 @@ description = ""
 authors = ["qwedsazxc78 <qwedsazxc78@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.6 <4.0"
+python = ">=3.6.1 <4.0"
 loguru = "^0.5.3"
 pydantic = "^1.9.0"
 requests = "^2.26.0"
