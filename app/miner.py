@@ -16,18 +16,19 @@ from loguru import logger
 
 
 class Worker(threading.Thread):
-    def __init__(self, miner, queue, id):
+    def __init__(self, worker: model.GPUWorkerSchema, queue):
         threading.Thread.__init__(self)
-        self.miner = miner
+        self.worker = worker
         self.queue = queue
-        self.id = id
+        self.id = worker.gpu_id
 
     def run(self):
         while True:
             if not self.queue.empty():
-                job = self.queue.get()
+                job = model.JobSchema(self.queue.get())
+                self.worker._add_job(job)
                 logger.info(f"Worker {self.id}: {job.seed} / {job.complexity} / {job.iterations} / {job.giver_address}")
-
+                logger.info(self.worker._cmd())
                 print(package.miner_cuda_path())
                 print(package.miner_opencl_path())
                 print(package.lite_client_path())
@@ -82,15 +83,16 @@ def create_job_manager(miner: model.MinerSchema, queue: queue.Queue, job_expirat
 
 
 def create_worker(miner: model.MinerSchema, queue: queue.Queue):
-    worker_pool = []
+    worker_pools = []
+    workers = miner._create_wokers()
 
-    for i in range(len(miner.devices)):
-        worker = Worker(miner, queue, i)
-        worker.setDaemon(True)
-        worker.start()
-        worker_pool.append(worker)
+    for worker in workers:
+        wk = Worker(worker, queue)
+        wk.setDaemon(True)
+        wk.start()
+        worker_pools.append(wk)
 
-    return worker_pool
+    return worker_pools
 
 
 class Graceful:
