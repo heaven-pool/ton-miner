@@ -25,7 +25,7 @@ class Worker(threading.Thread):
     def run(self):
         while True:
             if not self.queue.empty():
-                job = model.JobSchema(self.queue.get())
+                job = model.JobSchema.parse_obj(self.queue.get())
                 self.worker._add_job(job)
                 logger.info(f"Worker {self.id}: {job.seed} / {job.complexity} / {job.iterations} / {job.giver_address}")
                 logger.info(self.worker._cmd())
@@ -35,16 +35,7 @@ class Worker(threading.Thread):
 
                 subprocess.run([
                     package.miner_cuda_path(),
-                    '-vv',
-                    f'-g{self.id}',
-                    '-F16',
-                    '-t900',
-                    job.pool_wallet,
-                    job.seed,
-                    job.complexity,
-                    job.iterations,
-                    job.giver_address,
-                    f'mined-{self.id}.boc'
+                    self.worker._cmd()
                 ])
             else:
                 logger.info(f"Worker Idle {self.id}")

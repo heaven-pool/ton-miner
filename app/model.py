@@ -29,13 +29,20 @@ class GPUWorkerSchema(BaseModel):
     computer_uuid: str
 
     def _cmd(self):
-        cmd = f"-vv -g {self.gpu_id} -F {self.boost_factor} -t {self.timeout} -e {self.expire} "
+        cmd = f"-vv -g {self.gpu_id} -F {self.boost_factor} -t {self.timeout} "
         cmd += f"{self.pool_wallet} {self.job.seed} {self.job.complexity} {self.job.iterations} "
         cmd += f"{self.job.giver_address} {self.boc_name} "
         return cmd
 
     def _add_job(self, job: JobSchema):
         self.job = job
+
+    def _boc_name(self):
+        if self.gpu_id:
+            self.boc_name = f"mined-{self.gpu_id}.boc"
+        else:
+            self.boc_name = "mined_default.boc"
+        return self.boc_name
 
 
 class MinerSchema(BaseModel):
