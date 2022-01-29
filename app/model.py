@@ -23,7 +23,7 @@ class GPUWorkerSchema(BaseModel):
     gpu_id: int
     boost_factor: int = 16
     timeout: int = 900
-    boc_name: Optional[str]
+    boc_name: str = "mined_default.boc"
     miner_wallet: str
     computer_name: str
     computer_uuid: str
@@ -36,13 +36,6 @@ class GPUWorkerSchema(BaseModel):
 
     def _add_job(self, job: JobSchema):
         self.job = job
-
-    def _boc_name(self):
-        if self.gpu_id:
-            self.boc_name = f"mined-{self.gpu_id}.boc"
-        else:
-            self.boc_name = "mined_default.boc"
-        return self.boc_name
 
 
 class MinerSchema(BaseModel):
@@ -59,7 +52,8 @@ class MinerSchema(BaseModel):
             gpu_id=gpu,
             miner_wallet=self.miner_wallet,
             computer_name=self.computer_name,
-            computer_uuid=self.computer_uuid,)
+            computer_uuid=self.computer_uuid,
+            boc_name=f"mined-{gpu}.boc")
             for gpu in self.gpus]
 
         return self.workers
