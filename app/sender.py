@@ -35,7 +35,7 @@ def job(miner: model.MinerSchema) -> model.JobSchema:
     try:
         r = requests.get(api_url, timeout=10)
         response = r.json()
-         # TODO: handle status code
+        # TODO: handle status code
     except Exception as e:
         logger.warning('Failed to connect to pool: ' + str(e))
 

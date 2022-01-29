@@ -38,6 +38,7 @@ IGNORE_PATTENS = ['*.sh', 'tonlib*', '*.service', 'release.json', '*.conf', '*.j
 
 PROJECT_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parents[0]
 
+
 def get_ubuntu_version(version_id: str):
     if re.search('20', version_id):
         return 'ubuntu20'
@@ -45,6 +46,7 @@ def get_ubuntu_version(version_id: str):
         return 'ubuntu18'
     else:
         NotImplementedError(version_id)
+
 
 def get_os_type():
     '''

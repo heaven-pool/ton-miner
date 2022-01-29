@@ -1,21 +1,12 @@
 # -*- coding: utf-8 -*-s
+import platform
 import uuid
 from typing import List, Optional
 
 from pydantic import BaseModel
-import platform
 
-
-class MinerSchema(BaseModel):
-    pool_url: str
-    miner_wallet: str
-    computer_name: str = platform.node()
-    computer_uuid: bytes = hex(uuid.getnode())  # mac address
-    devices: List[str]
-
-    def _get_mac(self) -> bytes:
-        self.computer_uuid = hex(uuid.getnode())
-        return self.computer_uuid
+# Miner -> create GPUWorker
+# Job + GPUWorker -> JobResult
 
 
 class JobSchema(BaseModel):
@@ -27,6 +18,42 @@ class JobSchema(BaseModel):
     giver_address: str
 
 
+class GPUWorkerSchema(BaseModel):
+    job: Optional[JobSchema]
+    gpu_id: int
+    boost_factor: int = 16
+    timeout: int = 900
+    boc_name: Optional[str]
+    miner_wallet: str
+    computer_name: str
+    computer_uuid: str
+
+    def _cmd(self):
+        cmd = f"-vv -g {self.gpu_id} -F {self.boost_factor} -t {self.timeout} -e {self.expire} "
+        cmd += f"{self.pool_wallet} {self.job.seed} {self.job.complexity} {self.job.iterations} "
+        cmd += f"{self.job.giver_address} {self.boc_name} "
+        return cmd
+
+    def _add_job(self, job: JobSchema):
+        self.job = job
+
+
+class MinerSchema(BaseModel):
+    pool_url: str
+    miner_wallet: str
+    computer_name: str = platform.node()
+    computer_uuid: str = hex(uuid.getnode())  # mac address
+    devices: List[str]
+    workers: Optional[GPUWorkerSchema]
+
+    def _create_wokers(self):
+        self.workers = [GPUWorkerSchema(gpu_id=device,
+                                        miner_wallet=self.miner_wallet,
+                                        computer_name=self.computer_name,
+                                        computer_uuid=self.computer_uuid,)
+                        for device in self.devices]
+
+
 class JobResultSchema(BaseModel):
     job_id: int
     miner_wallet: str
@@ -35,23 +62,3 @@ class JobResultSchema(BaseModel):
     gpu_uuid: str
     hash_rate: int
     boc: str
-
-
-class MineCmdSchema(BaseModel):
-    job_id: int
-    gpu_id: int
-    boost_factor: int = 16
-    timeout: int = 900
-    expire: int
-    complexity: bytes
-    seed: str
-    iterations: int = 100000000000
-    pool_wallet: bytes
-    giver_address: bytes
-    boc_name: str
-
-    def _cmd(self):
-        cmd = f"-v -g {self.gpu_id} -F {self.boost_factor} -t {self.timeout} -e {self.expire} "
-        cmd += f"{self.pool_wallet} {self.seed} {self.complexity} {self.iterations} "
-        cmd += f"{self.giver_address} {self.boc_name} "
-        return cmd

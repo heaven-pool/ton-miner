@@ -1,10 +1,11 @@
 import argparse
 import os
 import sys
-import pyopencl as cl
 from datetime import datetime
+
+import pyopencl as cl
+import model
 from loguru import logger
-from app import model
 
 VERSION: str = "0.1.0"
 
@@ -58,7 +59,7 @@ def opencl_devices():
         logger.info(f"Platform {platform.name}:")
         for j, device in enumerate(platform.get_devices()):
             logger.info(f"    Device {j}: {get_device_id(device)}")
-            devices.append(get_device_id(device))
+            devices.append((get_device_id(device), device.get_info(0x4009)))
     return devices
 
 

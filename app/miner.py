@@ -1,17 +1,18 @@
-from datetime import datetime
+import os
+import platform
 import queue
+import signal
+import subprocess
+import sys
 import threading
 import time
-import sys
-import signal
-from loguru import logger
-import platform
+from datetime import datetime
+
 import config
-import os
-import subprocess
 import model
-import sender
 import package
+import sender
+from loguru import logger
 
 
 class Worker(threading.Thread):
