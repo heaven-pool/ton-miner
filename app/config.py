@@ -55,12 +55,14 @@ def opencl_devices():
         os._exit(255)
 
     devices = []
+    gpus = []
     for i, platform in enumerate(platforms):
         logger.info(f"Platform {platform.name}:")
         for j, device in enumerate(platform.get_devices()):
             logger.info(f"    Device {j}: {get_device_id(device)}")
-            devices.append((get_device_id(device), device.get_info(0x4009)))
-    return devices
+            devices.append(get_device_id(device))
+            gpus.append(device.get_info(0x4009))
+    return devices, gpus
 
 
 def print_info(run_params):
@@ -76,7 +78,7 @@ def init(argv):
     init_logger(params)
     print_info(params)
 
-    devices = opencl_devices()
+    devices, gpus = opencl_devices()
     logger.info(devices)
 
     miner = model.MinerSchema(pool_url=params.pool, miner_wallet=params.wallet, devices=devices)
