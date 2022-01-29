@@ -33,10 +33,7 @@ class Worker(threading.Thread):
                 print(package.miner_opencl_path())
                 print(package.lite_client_path())
 
-                subprocess.run([
-                    package.miner_cuda_path(),
-                    self.worker._cmd().split(" ")
-                ])
+                subprocess.run([package.miner_cuda_path(), ] + self.worker._cmd().split(" "))
             else:
                 logger.info(f"Worker Idle {self.id}")
             time.sleep(0.1)
