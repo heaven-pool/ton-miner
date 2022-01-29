@@ -36,7 +36,7 @@ MINER_TOOLS = {
 
 IGNORE_PATTENS = ['*.sh', 'tonlib*', '*.service', 'release.json', '*.conf', '*.json', '*.md']
 
-PROJECT_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parents[1]
+PROJECT_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parents[0]
 
 def get_ubuntu_version(version_id: str):
     if re.search('20', version_id):
