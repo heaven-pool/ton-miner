@@ -35,7 +35,7 @@ class Worker(threading.Thread):
 
                 subprocess.run([
                     package.miner_cuda_path(),
-                    self.worker._cmd()
+                    self.worker._cmd().split(" ")
                 ])
             else:
                 logger.info(f"Worker Idle {self.id}")
