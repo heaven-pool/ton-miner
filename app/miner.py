@@ -27,13 +27,14 @@ class Worker(threading.Thread):
             if not self.queue.empty():
                 job = model.JobSchema.parse_obj(self.queue.get())
                 self.worker._add_job(job)
+                argument = self.worker._cmd()
                 logger.info(f"Worker {self.id}: {job.seed} / {job.complexity} / {job.iterations} / {job.giver_address}")
-                logger.info(self.worker._cmd())
+                logger.info(argument)
                 print(package.miner_cuda_path())
                 print(package.miner_opencl_path())
                 print(package.lite_client_path())
 
-                subprocess.run([package.miner_cuda_path(), ] + self.worker._cmd().split(" "))
+                subprocess.run([package.miner_cuda_path(), ] + argument.split())
             else:
                 logger.info(f"Worker Idle {self.id}")
             time.sleep(0.1)
