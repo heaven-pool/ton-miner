@@ -36,7 +36,7 @@ class Worker(threading.Thread):
                     '-vv',
                     f'-g{self.id}',
                     '-F16',
-                    '-t3600',
+                    '-t900',
                     job.pool_wallet,
                     job.seed,
                     job.complexity,

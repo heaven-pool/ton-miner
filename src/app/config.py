@@ -4,7 +4,7 @@ import sys
 import pyopencl as cl
 from datetime import datetime
 from loguru import logger
-import model
+from app import model
 
 VERSION: str = "0.1.0"
 
