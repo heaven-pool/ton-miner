@@ -29,7 +29,7 @@ class GPUWorkerSchema(BaseModel):
     computer_uuid: str
 
     def _cmd(self):
-        cmd = f"-vv -g {self.gpu_id} -F {self.boost_factor} -t {self.timeout} "
+        cmd = f"-vv -g{self.gpu_id} -F{self.boost_factor} -t{self.timeout} "
         cmd += f"{self.job.pool_wallet} {self.job.seed} {self.job.complexity} {self.job.iterations} "
         cmd += f"{self.job.giver_address} {self.boc_name} "
         return cmd
