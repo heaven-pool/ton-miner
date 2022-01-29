@@ -44,14 +44,15 @@ class MinerSchema(BaseModel):
     computer_name: str = platform.node()
     computer_uuid: str = hex(uuid.getnode())  # mac address
     devices: List[str]
+    gpus: List[str]
     workers: Optional[GPUWorkerSchema]
 
     def _create_wokers(self):
-        self.workers = [GPUWorkerSchema(gpu_id=device,
+        self.workers = [GPUWorkerSchema(gpu_id=gpu,
                                         miner_wallet=self.miner_wallet,
                                         computer_name=self.computer_name,
                                         computer_uuid=self.computer_uuid,)
-                        for device in self.devices]
+                        for gpu in self.gpus]
 
 
 class JobResultSchema(BaseModel):

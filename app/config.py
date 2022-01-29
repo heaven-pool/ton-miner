@@ -80,6 +80,11 @@ def init(argv):
 
     devices, gpus = opencl_devices()
     logger.info(devices)
+    logger.info(gpus)
 
-    miner = model.MinerSchema(pool_url=params.pool, miner_wallet=params.wallet, devices=devices)
+    miner = model.MinerSchema(
+        pool_url=params.pool,
+        miner_wallet=params.wallet,
+        devices=devices,
+        gpus=gpus)
     return miner
