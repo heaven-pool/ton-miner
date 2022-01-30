@@ -77,9 +77,6 @@ class Worker(threading.Thread):
             time.sleep(0.1)
 
 
-check_output
-
-
 class JobManager(threading.Thread):
     def __init__(self, miner: model.MinerSchema, job_queue, result_queue, job_expiration):
         threading.Thread.__init__(self)
