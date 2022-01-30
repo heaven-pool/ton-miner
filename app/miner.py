@@ -41,41 +41,17 @@ class Worker(threading.Thread):
                 try:
                     outs, errs = proc.communicate(timeout=15)
                     result = self.worker._generate_job_result()
+                    self.result_queue.put(result)
                     logger.info(result)
-                    logger.info(f"try to submit result! ... {outs}, {errs}")
+                    logger.info(f"Try to submit result! ... {outs}, {errs}")
                 except FileNotFoundError:
                     outs, errs = proc.communicate()
-                    logger.info(f"FileNotFoundError! boc generate fail ... {outs}, {errs}")
+                    logger.info(f"Boc generate fail ... {outs}, {errs}")
                 except subprocess.TimeoutExpired:
                     proc.kill()
                     outs, errs = proc.communicate()
                     logger.warning(f"TimeoutExpired! ... {outs}, {errs}")
 
-                # if proc.returncode == 0:
-                #     result = self.worker._generate_job_result()
-                #     self.result_queue.put(result)
-                #     logger.info("try to submit result! ...")
-                # else:
-                #     logger.info(f"out {proc.returncode}! ...")
-                # try:
-                #     proc = subprocess.check_output(power_cmd, shell=True)
-                #     if proc == 0:
-                #         result = self.worker._generate_job_result()
-                #         self.result_queue.put(result)
-                #         logger.info("try to submit result! ...")
-                #     else:
-
-                #     logger.info(proc.stdout.decode("utf-8"))
-                # # except subprocess.CalledProcessError as err:
-                # #     logger.warning(f"Exit with error CalledProcessError! {err}")
-                # # except subprocess.TimeoutExpired as err:
-                # #     logger.warning(f"Exit with error TimeoutExpired! {err}")
-                # else:
-                #     logger.info("else condistion")
-                # finally:
-                #     # self.job_queue.task_done()
-                #     # if proc.poll():
-                #     #     proc.terminate()
             else:
                 logger.info(f"Worker Idle {self.id}")
             time.sleep(0.1)
@@ -112,7 +88,7 @@ class JobManager(threading.Thread):
                     logger.info(f"Result submit: {result}")
                     sender.submit(self.miner, result)
 
-            logger.info(f"Job/Result in queue: {self.job_queue.qsize()}/{self.result_queue.qsize()}")
+            # logger.info(f"Job/Result in queue: {self.job_queue.qsize()}/{self.result_queue.qsize()}")
             time.sleep(1)
 
 
