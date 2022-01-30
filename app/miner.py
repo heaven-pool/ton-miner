@@ -41,11 +41,13 @@ class Worker(threading.Thread):
 
                 try:
                     outs, errs = proc.communicate(timeout=15)
+                    result = self.worker._generate_job_result()
+                    logger.info(result)
                     logger.info(f"try to submit result! ... {outs}, {errs}")
                 except TimeoutExpired:
                     proc.kill()
                     outs, errs = proc.communicate()
-                    logger.info(f"try to submit result! ... {outs}, {errs}")
+                    logger.warning(f"TimeoutExpired! ... {outs}, {errs}")
 
                 # if proc.returncode == 0:
                 #     result = self.worker._generate_job_result()
