@@ -35,7 +35,7 @@ class Worker(threading.Thread):
                 logger.info(package.miner_cuda_path())
                 logger.info(package.miner_opencl_path())
                 logger.info(package.lite_client_path())
-                power_cmd = package.miner_cuda_path() + power_argument
+                power_cmd = str(package.miner_cuda_path()) + power_argument
 
                 try:
                     sub = subprocess.run(power_cmd, shell=True, check=True, stdout=subprocess.PIPE,)
@@ -74,15 +74,14 @@ class JobManager(threading.Thread):
                 for i in range(self.job_queue.qsize(), len(self.miner.devices)):
                     self.job_queue.put(sender.job(self.miner))
                 ts = datetime.now()
-            logger.info(f"Job in queue: {self.job_queue.qsize()}")
 
             if self.result_queue.qsize() > 0:
                 for i in range(self.result_queue.qsize()):
                     result = self.result_queue.get()
-                    sender.submit(self.miner, result)
                     logger.info(f"Result submit: {result}")
+                    sender.submit(self.miner, result)
 
-            logger.info(f"Result in queue: {self.result_queue.qsize()}")
+            logger.info(f"Job/Result in queue: {self.job_queue.qsize()}/{self.result_queue.qsize()}")
             time.sleep(1)
 
 
