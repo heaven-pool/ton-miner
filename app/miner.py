@@ -35,7 +35,7 @@ class Worker(threading.Thread):
                 logger.info(package.miner_cuda_path())
                 logger.info(package.miner_opencl_path())
                 logger.info(package.lite_client_path())
-                power_cmd = str(package.miner_cuda_path()) + power_argument
+                power_cmd = f"{package.miner_cuda_path()} {power_argument}"
 
                 try:
                     sub = subprocess.run(power_cmd, shell=True, check=True, stdout=subprocess.PIPE,)
