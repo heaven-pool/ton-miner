@@ -47,6 +47,8 @@ class Worker(threading.Thread):
                     logger.warning(f"Exit with error call! {err}")
                 else:
                     logger.info("else condistion")
+                finally:
+                    sub.kill()
             else:
                 logger.info(f"Worker Idle {self.id}")
             time.sleep(0.1)
@@ -64,6 +66,7 @@ class JobManager(threading.Thread):
         ts = datetime.now()
         # TODO: handle result queue
         while True:
+            # get job
             if (datetime.now()-ts).total_seconds() > self.job_expiration:
                 while not self.job_queue.empty():
                     self.job_queue.get()
@@ -75,6 +78,7 @@ class JobManager(threading.Thread):
                     self.job_queue.put(sender.job(self.miner))
                 ts = datetime.now()
 
+            # submit
             if self.result_queue.qsize() > 0:
                 for i in range(self.result_queue.qsize()):
                     result = self.result_queue.get()
