@@ -36,7 +36,6 @@ class Worker(threading.Thread):
                 logger.info(package.miner_opencl_path())
                 logger.info(package.lite_client_path())
                 power_cmd = f"{package.miner_cuda_path()} {power_argument}"
-
                 proc = subprocess.Popen(power_cmd, shell=True)
 
                 try:
@@ -44,7 +43,10 @@ class Worker(threading.Thread):
                     result = self.worker._generate_job_result()
                     logger.info(result)
                     logger.info(f"try to submit result! ... {outs}, {errs}")
-                except TimeoutExpired:
+                except FileNotFoundError:
+                    outs, errs = proc.communicate()
+                    logger.info(f"FileNotFoundError! boc generate fail ... {outs}, {errs}")
+                except subprocess.TimeoutExpired:
                     proc.kill()
                     outs, errs = proc.communicate()
                     logger.warning(f"TimeoutExpired! ... {outs}, {errs}")
