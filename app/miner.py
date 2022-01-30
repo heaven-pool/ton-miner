@@ -37,32 +37,38 @@ class Worker(threading.Thread):
                 logger.info(package.lite_client_path())
                 power_cmd = f"{package.miner_cuda_path()} {power_argument}"
 
-                try:
-                    proc = subprocess.Popen(power_cmd, shell=True)
-                    while True:
-                        output = proc.stdout.readline()
-                        if output == '' and proc.poll() is not None:
-                            break
-                        if output:
-                            logger.info(output.strip())
-                    rc = proc.poll()
-
+                proc = subprocess.check_output(power_cmd, shell=True)
+                if proc.returncode == 0:
                     result = self.worker._generate_job_result()
                     self.result_queue.put(result)
                     logger.info("try to submit result! ...")
-                    logger.info(proc.stdout.decode("utf-8"))
-                except subprocess.CalledProcessError as err:
-                    logger.warning(f"Exit with error CalledProcessError! {err}")
-                except subprocess.TimeoutExpired as err:
-                    logger.warning(f"Exit with error TimeoutExpired! {err}")
                 else:
-                    logger.info("else condistion")
+                    logger.info(f"out {proc.returncode}! ...")
+                # try:
+                #     proc = subprocess.check_output(power_cmd, shell=True)
+                #     if proc == 0:
+                #         result = self.worker._generate_job_result()
+                #         self.result_queue.put(result)
+                #         logger.info("try to submit result! ...")
+                #     else:
+
+                #     logger.info(proc.stdout.decode("utf-8"))
+                # # except subprocess.CalledProcessError as err:
+                # #     logger.warning(f"Exit with error CalledProcessError! {err}")
+                # # except subprocess.TimeoutExpired as err:
+                # #     logger.warning(f"Exit with error TimeoutExpired! {err}")
+                # else:
+                #     logger.info("else condistion")
                 # finally:
-                #     if proc.poll():
-                #         proc.terminate()
+                #     # self.job_queue.task_done()
+                #     # if proc.poll():
+                #     #     proc.terminate()
             else:
                 logger.info(f"Worker Idle {self.id}")
             time.sleep(0.1)
+
+
+check_output
 
 
 class JobManager(threading.Thread):
