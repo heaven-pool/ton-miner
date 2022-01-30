@@ -37,6 +37,7 @@ class Worker(threading.Thread):
                 logger.info(package.lite_client_path())
                 power_cmd = f"{package.miner_cuda_path()} {power_argument}"
 
+                sub = None
                 try:
                     sub = subprocess.run(power_cmd, shell=True, check=True, stdout=subprocess.PIPE,)
                     result = self.worker._generate_job_result()
@@ -44,7 +45,9 @@ class Worker(threading.Thread):
                     logger.info("try to submit result! ...")
                     logger.info(sub.stdout.decode("utf-8"))
                 except subprocess.CalledProcessError as err:
-                    logger.warning(f"Exit with error call! {err}")
+                    logger.warning(f"Exit with error CalledProcessError! {err}")
+                except subprocess.TimeoutExpired as err:
+                    logger.warning(f"Exit with error TimeoutExpired! {err}")
                 else:
                     logger.info("else condistion")
                 finally:
