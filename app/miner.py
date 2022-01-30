@@ -37,13 +37,22 @@ class Worker(threading.Thread):
                 logger.info(package.lite_client_path())
                 power_cmd = f"{package.miner_cuda_path()} {power_argument}"
 
-                proc = subprocess.check_output(power_cmd, shell=True)
-                if proc.returncode == 0:
-                    result = self.worker._generate_job_result()
-                    self.result_queue.put(result)
-                    logger.info("try to submit result! ...")
-                else:
-                    logger.info(f"out {proc.returncode}! ...")
+                proc = subprocess.Popen(power_cmd, shell=True)
+
+                try:
+                    outs, errs = proc.communicate(timeout=15)
+                    logger.info(f"try to submit result! ... {outs}, {errs}")
+                except TimeoutExpired:
+                    proc.kill()
+                    outs, errs = proc.communicate()
+                    logger.info(f"try to submit result! ... {outs}, {errs}")
+
+                # if proc.returncode == 0:
+                #     result = self.worker._generate_job_result()
+                #     self.result_queue.put(result)
+                #     logger.info("try to submit result! ...")
+                # else:
+                #     logger.info(f"out {proc.returncode}! ...")
                 # try:
                 #     proc = subprocess.check_output(power_cmd, shell=True)
                 #     if proc == 0:
