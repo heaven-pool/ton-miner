@@ -37,9 +37,8 @@ class Worker(threading.Thread):
                 logger.info(package.lite_client_path())
                 power_cmd = f"{package.miner_cuda_path()} {power_argument}"
 
-                proc = subprocess.run(power_cmd, shell=True, check=True, stdout=subprocess.PIPE,)
                 try:
-                    outs, errs = proc.communicate(timeout=15)
+                    proc = subprocess.check_output(power_cmd, shell=True)
                     result = self.worker._generate_job_result()
                     self.result_queue.put(result)
                     logger.info("try to submit result! ...")
