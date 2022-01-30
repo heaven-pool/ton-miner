@@ -37,9 +37,16 @@ class Worker(threading.Thread):
                 logger.info(package.lite_client_path())
                 power_cmd = f"{package.miner_cuda_path()} {power_argument}"
 
-                proc = subprocess.check_output(power_cmd, shell=True)
                 try:
-                    outs, errs = proc.communicate(timeout=15)
+                    proc = subprocess.Popen(power_cmd, shell=True)
+                    while True:
+                        output = proc.stdout.readline()
+                        if output == '' and proc.poll() is not None:
+                            break
+                        if output:
+                            logger.info(output.strip())
+                    rc = proc.poll()
+
                     result = self.worker._generate_job_result()
                     self.result_queue.put(result)
                     logger.info("try to submit result! ...")
@@ -50,8 +57,9 @@ class Worker(threading.Thread):
                     logger.warning(f"Exit with error TimeoutExpired! {err}")
                 else:
                     logger.info("else condistion")
-                finally:
-                    proc.kill()
+                # finally:
+                #     if proc.poll():
+                #         proc.terminate()
             else:
                 logger.info(f"Worker Idle {self.id}")
             time.sleep(0.1)
