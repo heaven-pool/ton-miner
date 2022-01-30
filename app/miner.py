@@ -46,7 +46,7 @@ class Worker(threading.Thread):
                     logger.info(f"Try to submit result! ... {outs}, {errs}")
                 except FileNotFoundError:
                     outs, errs = proc.communicate()
-                    logger.info(f"Boc generate fail ... {outs}, {errs}")
+                    logger.info(f"power doesn't generate boc file ... {outs}, {errs}")
                 except subprocess.TimeoutExpired:
                     proc.kill()
                     outs, errs = proc.communicate()

@@ -32,7 +32,7 @@ class GPUWorkerSchema(BaseModel):
     job: Optional[JobSchema]
     gpu_id: int
     boost_factor: int = 16
-    timeout: int = 10
+    timeout: int = 900
     boc_name: str = "mined_default.boc"
     miner_wallet: str
     computer_name: str
