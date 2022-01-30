@@ -43,7 +43,7 @@ def job(miner: model.MinerSchema) -> model.JobSchema:
     return job
 
 
-def submit(miner: model.MinerSchema, result: model.JobResultSchema):
+def submit(gpu_woker: model.MinerSchema, result: model.JobResultSchema):
     api_url = urljoin(miner.pool_url, SUBMIT_API)
     logger.debug('api_url: ' + api_url)
 

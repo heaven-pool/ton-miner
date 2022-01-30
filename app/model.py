@@ -18,6 +18,16 @@ class JobSchema(BaseModel):
     giver_address: str
 
 
+class JobResultSchema(BaseModel):
+    job_id: int
+    miner_wallet: str
+    computer_name: str
+    computer_uuid: str
+    gpu_uuid: str
+    hash_rate: int
+    boc: str
+
+
 class GPUWorkerSchema(BaseModel):
     job: Optional[JobSchema]
     gpu_id: int
@@ -34,8 +44,24 @@ class GPUWorkerSchema(BaseModel):
         cmd += f"{self.job.giver_address} {self.boc_name} "
         return cmd
 
-    def _add_job(self, job: JobSchema):
+    def _add_job(self, job: JobSchema) -> JobResultSchema:
         self.job = job
+
+    def _generate_job_result(self):
+        contexts = ''
+        with open(self.boc_name, 'r') as f:
+            contexts = f.read()
+
+        result = JobResultSchema(
+            job_id=self.job.job_id,
+            miner_wallet=self.miner_wallet,
+            computer_name=self.computer_name,
+            computer_uuid=self.computer_uuid,
+            gpu_uuid=self.gpu_id,
+            hash_rate=666,
+            boc=contexts,
+        )
+        return result
 
 
 class MinerSchema(BaseModel):
@@ -57,13 +83,3 @@ class MinerSchema(BaseModel):
             for gpu in self.gpus]
 
         return self.workers
-
-
-class JobResultSchema(BaseModel):
-    job_id: int
-    miner_wallet: str
-    computer_name: str
-    computer_uuid: str
-    gpu_uuid: str
-    hash_rate: int
-    boc: str
