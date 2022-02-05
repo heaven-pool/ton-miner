@@ -31,6 +31,7 @@ class JobResultSchema(BaseModel):
 class GPUWorkerSchema(BaseModel):
     job: Optional[JobSchema]
     gpu_id: int
+    gpu_device: str
     boost_factor: int = 16
     timeout: int = 900
     boc_name: str = "mined_default.boc"
@@ -76,10 +77,11 @@ class MinerSchema(BaseModel):
     def _create_wokers(self) -> List[GPUWorkerSchema]:
         self.workers = [GPUWorkerSchema(
             gpu_id=gpu,
+            gpu_device=device,
             miner_wallet=self.miner_wallet,
             computer_name=self.computer_name,
             computer_uuid=self.computer_uuid,
             boc_name=f"mined-{gpu}.boc")
-            for gpu in self.gpus]
+            for gpu, device in zip(self.gpus, self.devices)]
 
         return self.workers

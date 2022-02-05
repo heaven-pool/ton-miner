@@ -2,6 +2,7 @@
     "python.linting.pylamaEnabled": true,
     "python.linting.enabled": true,
     "cSpell.words": [
+        "cuda",
         "opencl"
     ]
 }

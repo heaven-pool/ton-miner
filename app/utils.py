@@ -43,9 +43,7 @@ def get_os_type():
         NotImplementedError(uname)
 
 
-def get_bin_path(binfile: str) -> Path:
-    os_type = get_os_type()
-
+def get_bin_path(os_type: str, binfile: str) -> Path:
     if os_type == 'windows':
         return Path(APP_ROOT_PATH, 'assets', f'win-{binfile}.exe')
     elif os_type == 'ubuntu18' or os_type == 'hiveos':
@@ -57,16 +55,17 @@ def get_bin_path(binfile: str) -> Path:
         return ""
 
 
-def lite_client_path() -> Path:
-    return get_bin_path('lite-client')
+def get_gpu_vender(gpu_info: str):
+    if "NVIDIA" in gpu_info.upper():
+        return "cuda"
+    elif "AMD" in gpu_info.upper():
+        return "opencl"
 
 
-def miner_cuda_path() -> Path:
-    return get_bin_path('cuda')
-
-
-def miner_opencl_path() -> Path:
-    return get_bin_path('opencl')
+def get_miner_bin_path(gpu_info: str) -> Path:
+    vender = get_gpu_vender(gpu_info)
+    os_type = get_os_type()
+    return get_bin_path(vender, os_type)
 
 
 def parse_bin_log(data: str):

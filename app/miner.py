@@ -10,7 +10,7 @@ from datetime import datetime
 
 import config
 import model
-import package
+import utils
 import sender
 from loguru import logger
 
@@ -36,14 +36,14 @@ class Worker(threading.Thread):
                 self.worker._add_job(job)
                 power_argument = self.worker._cmd()
 
-                # logger.info(power_argument)
-                # logger.info(package.miner_cuda_path())
-                # logger.info(package.miner_opencl_path())
-                # logger.info(package.lite_client_path())
-                power_cmd = f"{package.miner_cuda_path()} {power_argument}".split(' ')
+                logger.info(self.worker.gpu_device)
+                miner_bin_path = utils.get_miner_bin_path(self.worker.gpu_device)
+                logger.info(miner_bin_path)
+
+                power_cmd = f"{miner_bin_path} {power_argument}".split(' ')
                 self.process = subprocess.Popen(power_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-                logger.info(f"Minner is Running!")
+                logger.info(f"Miner is Running!")
                 logger.info(f"Worker {job}")
                 try:
                     while self.process:
