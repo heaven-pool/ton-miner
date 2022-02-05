@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from app import package
+from app import utils
 import pytest
 
 @pytest.mark.parametrize("test_input, expected", [
@@ -7,4 +7,4 @@ import pytest
     ('VERSION_ID="20.04"\n', 'ubuntu20')
 ])
 def test_get_ubuntu_version(test_input, expected):
-    assert expected == package.get_ubuntu_version(test_input)
+    assert expected == utils.get_ubuntu_version(test_input)

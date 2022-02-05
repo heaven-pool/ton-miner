@@ -31,14 +31,15 @@ class Worker(threading.Thread):
     def run(self):
         while True:
             if not self.job_queue.empty():
-
+                # get job
                 job = model.JobSchema.parse_obj(self.job_queue.get())
                 self.worker._add_job(job)
-                power_argument = self.worker._cmd()
 
-                logger.info(self.worker.gpu_device)
+                # get bin path and argument
+                power_argument = self.worker._cmd()
                 miner_bin_path = utils.get_miner_bin_path(self.worker.gpu_device)
-                logger.info(miner_bin_path)
+                logger.debug(self.worker.gpu_device)
+                logger.debug(miner_bin_path)
 
                 power_cmd = f"{miner_bin_path} {power_argument}".split(' ')
                 self.process = subprocess.Popen(power_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

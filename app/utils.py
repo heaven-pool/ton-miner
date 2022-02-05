@@ -2,6 +2,7 @@ import re
 import platform
 from pathlib import Path
 from loguru import logger
+import os
 
 APP_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__)))
 
@@ -65,7 +66,8 @@ def get_gpu_vender(gpu_info: str):
 def get_miner_bin_path(gpu_info: str) -> Path:
     vender = get_gpu_vender(gpu_info)
     os_type = get_os_type()
-    return get_bin_path(vender, os_type)
+    
+    return get_bin_path(os_type=os_type, binfile=vender)
 
 
 def parse_bin_log(data: str):
