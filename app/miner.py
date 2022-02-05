@@ -22,6 +22,11 @@ class Worker(threading.Thread):
         self.job_queue = job_queue
         self.result_queue = result_queue
         self.id = worker.gpu_id
+        self.process = None
+
+    def __del__(self):
+        if self.process:
+            self.process.kill()
 
     def run(self):
         while True:
@@ -37,24 +42,27 @@ class Worker(threading.Thread):
                 logger.info(package.lite_client_path())
                 power_cmd = f"{package.miner_cuda_path()} {power_argument}"
 
-                proc = subprocess.Popen(power_cmd, shell=True, stdout=subprocess.PIPE)
+                self.process = subprocess.Popen(power_cmd, shell=True, stdout=subprocess.PIPE)
+                for line in proc.stdout:
+                    print(line.rstrip("\n"))
+                self.process.wait()  # you may already be handling this in your current code
 
-                try:
-                    for line in proc.stdout:
-                        print(line.rstrip("\n"))
-                    proc.wait()  # you may already be handling this in your current code
+                # try:
+                #     for line in proc.stdout:
+                #         print(line.rstrip("\n"))
+                #     proc.wait()  # you may already be handling this in your current code
 
-                    result = self.worker._generate_job_result()
-                    self.result_queue.put(result)
-                    logger.info(result)
-                    logger.info(f"Try to submit result! ... {outs}, {errs}")
-                except FileNotFoundError:
-                    outs, errs = proc.communicate()
-                    logger.info(f"power doesn't generate boc file ... {outs}, {errs}")
-                except subprocess.TimeoutExpired:
-                    proc.kill()
-                    outs, errs = proc.communicate()
-                    logger.warning(f"TimeoutExpired! ... {outs}, {errs}")
+                #     result = self.worker._generate_job_result()
+                #     self.result_queue.put(result)
+                #     logger.info(result)
+                #     logger.info(f"Try to submit result! ... {outs}, {errs}")
+                # except FileNotFoundError:
+                #     outs, errs = proc.communicate()
+                #     logger.info(f"power doesn't generate boc file ... {outs}, {errs}")
+                # except subprocess.TimeoutExpired:
+                #     proc.kill()
+                #     outs, errs = proc.communicate()
+                #     logger.warning(f"TimeoutExpired! ... {outs}, {errs}")
 
             else:
                 logger.info(f"Worker Idle {self.id}")
