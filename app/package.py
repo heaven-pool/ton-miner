@@ -8,6 +8,8 @@ import re
 import shutil
 import tarfile
 from loguru import logger
+from utils import get_ubuntu_version, get_os_type
+
 
 VERSION = '20211230.1'
 BASE_URL = f'https://github.com/tontechio/pow-miner-gpu/releases/download/{VERSION}'
@@ -37,29 +39,6 @@ MINER_TOOLS = {
 IGNORE_PATTENS = ['*.sh', 'tonlib*', '*.service', 'release.json', '*.conf', '*.json', '*.md']
 
 PROJECT_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parents[0]
-
-
-
-
-def get_path(bin: str) -> Path:
-    os_type = get_os_type()
-
-    if os_type == 'windows':
-        bin += '.exe'
-
-    return Path(PROJECT_ROOT_PATH, 'bin', os_type, bin)
-
-
-def lite_client_path() -> Path:
-    return get_path('lite-client')
-
-
-def miner_cuda_path() -> Path:
-    return get_path('pow-miner-cuda')
-
-
-def miner_opencl_path() -> Path:
-    return get_path('pow-miner-opencl')
 
 
 def download_url(url, dst_folder, chunk_size=128):

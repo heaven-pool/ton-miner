@@ -27,16 +27,15 @@ class Worker(threading.Thread):
     def __del__(self):
         if self.process:
             self.process.kill()
-            
 
     def run(self):
         while True:
             if not self.job_queue.empty():
-                
+
                 job = model.JobSchema.parse_obj(self.job_queue.get())
                 self.worker._add_job(job)
                 power_argument = self.worker._cmd()
-                
+
                 # logger.info(power_argument)
                 # logger.info(package.miner_cuda_path())
                 # logger.info(package.miner_opencl_path())
