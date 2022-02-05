@@ -73,7 +73,12 @@ def get_miner_bin_path(gpu_info: str) -> Path:
 def parse_bin_log(data: str):
     '''
         input:
-            b'\x1b[1;36m[ 3][t 0][2022-02-05 13:20:50.976809507][Miner.cpp:105]\t[ mining in progress, passed: 5006.2ms, hashes computed: 1761607680, instant speed: 371.361 Mhash/s, average speed: 351.884 Mhash/s ]\x1b[0m\n'
+            b'[ GPU #0: SM 6.1 GeForce GTX 1050 Ti ]\x1b[0m\n'
+            b'\x1b[1;36m[ 3][t 0][2022-02-05 14:56:53.316578448][pow-miner.cpp:388]\t[ expected required hashes for success: 29301469717946154 ]\x1b[0m\n'
+            b'\x1b[1;33m[ 2][t 0][2022-02-05 14:56:53.494029473][credits.cu:29]\t[ START MINER, GPU ID: 0, boost factor: 16, throughput: 8388608 ]\x1b[0m\n'
+            b'\x1b[1;36m[ 3][t 0][2022-02-05 14:56:58.323761700][Miner.cpp:105]\t[ mining in progress, passed: 5006.4ms, hashes computed: 1769996288, instant speed: 365.831 Mhash/s, average speed: 353.546 Mhash/s ]\x1b[0m\n'
+            b'\x1b[1;36m[ 3][t 0][2022-02-05 14:57:03.329795978][Miner.cpp:105]\t[ mining in progress, passed: 10.0s, hashes computed: 3615490048, instant speed: 368.285 Mhash/s, average speed: 361.073 Mhash/s ]\x1b[0m\n'
+
         output:
     '''
     pass
