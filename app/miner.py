@@ -32,29 +32,29 @@ class Worker(threading.Thread):
     def run(self):
         while True:
             if not self.job_queue.empty():
+                
                 job = model.JobSchema.parse_obj(self.job_queue.get())
                 self.worker._add_job(job)
                 power_argument = self.worker._cmd()
-                logger.info(f"Worker {job}")
-
+                
                 # logger.info(power_argument)
                 # logger.info(package.miner_cuda_path())
                 # logger.info(package.miner_opencl_path())
                 # logger.info(package.lite_client_path())
-                power_cmd = f"{package.miner_cuda_path()} {power_argument}"
-                power_cmd_list = power_cmd.split(' ')
+                power_cmd = f"{package.miner_cuda_path()} {power_argument}".split(' ')
+                self.process = subprocess.Popen(power_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-                self.process = subprocess.Popen(power_cmd_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                logger.info(f"Minner is Running!")
+                logger.info(f"Worker {job}")
                 try:
-                    logger.info(f"Minner is Running!")
                     while self.process:
                         output = self.process.stderr.readline()
-                        logger.info(output)
+                        if output:
+                            logger.info(output)
 
                     result = self.worker._generate_job_result()
                     self.result_queue.put(result)
-                    logger.info(result)
-                    logger.info(f"Try to submit result! ... {outs}, {errs}")
+                    logger.info(f"Try to submit result! ... {result}")
                 except FileNotFoundError:
                     outs, errs = self.process.communicate()
                     logger.info(f"power doesn't generate boc file ... {outs}, {errs}")
