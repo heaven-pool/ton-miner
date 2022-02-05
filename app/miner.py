@@ -37,18 +37,13 @@ class Worker(threading.Thread):
                 logger.info(package.lite_client_path())
                 power_cmd = f"{package.miner_cuda_path()} {power_argument}"
 
-                proc = subprocess.Popen(power_cmd, shell=True, stdout=subprocess.PIPE, bufsize=1,)
+                proc = subprocess.Popen(power_cmd, shell=True, stdout=subprocess.PIPE)
 
                 try:
-                    while True:
-                        realtime_output = proc.stdout.readline()
-                        if realtime_output == '' and proc.poll() is not None:
-                            break
-                        if realtime_output:
-                            logger.info(realtime_output.strip(), flush=False)
-                            sys.stdout.flush()
+                    for line in proc.stdout:
+                        print(line.rstrip("\n"))
+                    proc.wait()  # you may already be handling this in your current code
 
-                    outs, errs = proc.communicate(timeout=15)
                     result = self.worker._generate_job_result()
                     self.result_queue.put(result)
                     logger.info(result)
