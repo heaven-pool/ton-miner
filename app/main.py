@@ -6,14 +6,13 @@ import subprocess
 import sys
 import threading
 import time
-import requests
-import pydantic 
-import pyopencl
 from datetime import datetime
 
+import pydantic
+import pyopencl
+import requests
 from libs import config, runner
 from loguru import logger
-
 
 if __name__ == "__main__":
     miner = config.init(sys.argv[1:])

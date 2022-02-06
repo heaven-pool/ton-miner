@@ -8,8 +8,8 @@ import zipfile
 from pathlib import Path
 
 import requests
-from loguru import logger
 from libs.utils import get_os_type, get_ubuntu_version
+from loguru import logger
 
 VERSION = '20211230.1'
 BASE_URL = f'https://github.com/tontechio/pow-miner-gpu/releases/download/{VERSION}'

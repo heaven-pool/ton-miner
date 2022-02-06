@@ -1,7 +1,7 @@
 VERTION=0.2.5
-URL=https://mining-mission.rich-thinking.com
-# URL=https://next.ton-pool.com
-WALLET=EQB6UzwFx-gZTIZmJmiFWZ7_qTIZ9RwBaR1_2IPtKR4UuAoJ
+URL=https://ton-dev.heaven-pool.com
+WALLET=EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq
+
 MINNER=ton-heaven-pool-miner
 OS_VERSION=hiveos
 FOLDER_NAME=${MINNER}-${VERTION}
@@ -10,7 +10,6 @@ ZIP_NAME=${FOLDER_NAME}-${OS_VERSION}
 
 hiveos_env() {
     apt install -y python3-pip git
-
     pip3 install requests pyinstaller
 }
 
@@ -21,7 +20,6 @@ run_build() {
 zip () {
     mkdir -p ${FOLDER_NAME}
     cp -r ./${MINNER}/ ${FOLDER_NAME}
-    curl https://newton-blockchain.github.io/global.config.json ./ton-heaven-pool-miner/config/global.config.json
     tar -zcv --exclude='.DS_Store' -f ${ZIP_NAME}.tar.gz ${FOLDER_NAME}
 }
 
@@ -44,11 +42,11 @@ release(){
 }
 
 bin() {
-    ./bin/hiveos/miner --pool https://ton-dev.heaven-pool.com EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq
+    ./bin/hiveos/miner --pool ${URL} ${WALLET}
 }
 
 py() {
-    poetry run python ./app/main.py --pool https://ton-dev.heaven-pool.com EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq
+    poetry run python ./app/main.py --pool ${URL} ${WALLET}
 }
 
 "$@"
