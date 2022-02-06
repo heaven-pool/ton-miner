@@ -1,7 +1,7 @@
 import os
 from urllib.parse import urljoin
 
-import models
+from libs import models
 import requests
 from loguru import logger
 

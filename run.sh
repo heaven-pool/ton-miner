@@ -48,7 +48,7 @@ bin() {
 }
 
 py() {
-    poetry run python ./app/miner.py --pool https://ton-dev.heaven-pool.com EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq
+    poetry run python ./app/main.py --pool https://ton-dev.heaven-pool.com EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq
 }
 
 "$@"

@@ -13,7 +13,7 @@ setup(
     ],
     include_package_data=True,
     install_requires=[
-        "numpy", "argparse", "requests", "pyopencl", "config", "models", "utils", "sender"
+        "numpy", "argparse", "requests", "pyopencl",
     ],
-    entry_points={"console_scripts": ["ton-minner=:miner"]},
+    entry_points={"console_scripts": ["ton-minner=:main"]},
 )

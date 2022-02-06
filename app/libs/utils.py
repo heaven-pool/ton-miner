@@ -4,7 +4,7 @@ from pathlib import Path
 from loguru import logger
 import os
 
-APP_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__)))
+APP_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parent
 
 
 def get_ubuntu_version(version_id: str):

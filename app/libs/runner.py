@@ -8,14 +8,8 @@ import threading
 import time
 from datetime import datetime
 
-from app.libs import config, models, utils, sender
-# import config
-# import models
-# import utils
-# import sender
-# from . import config, models, utils, sender
+from libs import config, models, utils, sender
 from loguru import logger
-
 
 class Worker(threading.Thread):
     def __init__(self, worker: models.GPUWorkerSchema, job_queue, result_queue,):
@@ -150,20 +144,3 @@ class Graceful:
 
     def you_may_die(self, *args):
         self.rip = True
-
-
-if __name__ == "__main__":
-    miner = config.init(sys.argv[1:])
-    logger.debug(miner)
-
-    task_queue = queue.Queue()
-    result_queue = queue.Queue()
-    job_manager = create_job_manager(miner, task_queue, result_queue, 10)
-    work_pools = create_worker(miner, task_queue, result_queue)
-
-    graceful = Graceful()
-    while not graceful.rip:
-        time.sleep(1)
-
-    logger.info("Interrupted...")
-    logger.info("Exiting...")
