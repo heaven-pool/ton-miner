@@ -57,10 +57,10 @@ def opencl_devices():
     devices = []
     gpus = []
     for i, platform in enumerate(platforms):
-        logger.info(f"Platform {platform.name}:")
+        logger.debug(f"Platform {platform.name}:")
         for j, device in enumerate(platform.get_devices()):
             dev = get_device_id(device)
-            logger.info(f"    Device {j}: {dev}")
+            logger.debug(f"    Device {j}: {dev}")
             devices.append(f"{platform.name} {dev}")
             gpus.append(device.get_info(0x4009))
     return devices, gpus

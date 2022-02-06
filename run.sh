@@ -46,7 +46,7 @@ bin() {
 }
 
 py() {
-    poetry run python ./app/main.py --pool ${URL} ${WALLET}
+    poetry run python ./app/main.py --pool ${URL} --debug ${WALLET}
 }
 
 "$@"

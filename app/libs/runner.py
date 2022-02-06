@@ -48,13 +48,10 @@ class Worker(threading.Thread):
                     while self.process.poll() is None:
                         output = self.process.stderr.readline()
                         if output:
-                            logger.info(f'output: {output}')
+                            logger.debug(f'output: {output}')
                             hash_rate = utils.parse_log_to_hashrate(output)
-                            logger.info(f'average speed: {hash_rate}')
-                        # if output and utils.parse_log_to_hashrate(output):
-                        #     hash_rate = utils.parse_log_to_hashrate(output)
-                        #     logger.info(output )
-                        #     logger.info(f'average speed: {hash_rate}')
+                            if hash_rate:
+                                logger.info(f'GPU{self.worker.gpu_id} - average hashrate: {hash_rate}')
 
                     result = self.worker._generate_job_result(hash_rate)
                     self.result_queue.put(result)
