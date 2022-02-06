@@ -52,7 +52,8 @@ class Worker(threading.Thread):
                         output = self.process.stderr.readline()
                         if output and utils.parse_log_to_hashrate(output):
                             hash_rate = utils.parse_log_to_hashrate(output)
-                            logger.info(output + ', average speed:'+hash_rate)
+                            logger.info(output )
+                            logger.info(f'average speed: {hash_rate}')
 
                     result = self.worker._generate_job_result(hash_rate)
                     self.result_queue.put(result)
