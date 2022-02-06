@@ -27,8 +27,8 @@ def init_logger(run_params):
         log_level = "INFO"
     logger.remove()
     logger.add(sys.stdout, level=log_level)
-    logger.add(f"miner_{now.strftime('%Y-%m-%dT%H-%M-%S')}.log", level=log_level)
-    logger.add(f"miner_{now.strftime('%Y-%m-%dT%H-%M-%S')}.err.log", level="WARNING")
+    logger.add(f"logs/miner_{now.strftime('%Y-%m-%dT%H-%M-%S')}.log", rotation="1 week", level=log_level)
+    logger.add(f"logs/miner_{now.strftime('%Y-%m-%dT%H-%M-%S')}.err.log", rotation="1 week", level="WARNING")
 
 
 def get_device_id(device):
