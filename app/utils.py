@@ -13,7 +13,7 @@ def get_ubuntu_version(version_id: str):
     elif re.search('18', version_id):
         return 'ubuntu18'
     else:
-        NotImplementedError(version_id)
+        raise NotImplementedError(version_id)
 
 
 def get_os_type():
@@ -39,9 +39,9 @@ def get_os_type():
         elif 'hiveos' in uname.version:
             return 'hiveos'
         else:
-            NotImplementedError(uname)
+            raise NotImplementedError(uname)
     else:
-        NotImplementedError(uname)
+        raise NotImplementedError(uname)
 
 
 def get_bin_path(os_type: str, binfile: str) -> Path:
@@ -53,10 +53,13 @@ def get_bin_path(os_type: str, binfile: str) -> Path:
         return Path(APP_ROOT_PATH, 'assets', f'ubuntu20-{binfile}')
     else:
         logger.error(f'gpu does not be executable {binfile}')
-        return ""
+        raise NotImplementedError(uname)
 
 
 def get_gpu_vender(gpu_info: str):
+    '''
+        'NVIDIA CUDA GeForce GTX 1050 Ti on PCI bus 3 slot 0'
+    '''
     if "NVIDIA" in gpu_info.upper():
         return "cuda"
     elif "AMD" in gpu_info.upper():
@@ -66,11 +69,11 @@ def get_gpu_vender(gpu_info: str):
 def get_miner_bin_path(gpu_info: str) -> Path:
     vender = get_gpu_vender(gpu_info)
     os_type = get_os_type()
-    
+
     return get_bin_path(os_type=os_type, binfile=vender)
 
 
-def parse_bin_log(data: str):
+def parse_log_to_hashrate(data: str) -> str:
     '''
         input:
             b'[ GPU #0: SM 6.1 GeForce GTX 1050 Ti ]\x1b[0m\n'
@@ -79,6 +82,14 @@ def parse_bin_log(data: str):
             b'\x1b[1;36m[ 3][t 0][2022-02-05 14:56:58.323761700][Miner.cpp:105]\t[ mining in progress, passed: 5006.4ms, hashes computed: 1769996288, instant speed: 365.831 Mhash/s, average speed: 353.546 Mhash/s ]\x1b[0m\n'
             b'\x1b[1;36m[ 3][t 0][2022-02-05 14:57:03.329795978][Miner.cpp:105]\t[ mining in progress, passed: 10.0s, hashes computed: 3615490048, instant speed: 368.285 Mhash/s, average speed: 361.073 Mhash/s ]\x1b[0m\n'
 
+            passed: 10.0s, hashes computed: 3615490048, instant speed: 368.285 Mhash/s, average speed: 361.073 Mhash/s
         output:
+            hashrate
     '''
-    pass
+
+    try:
+        info = re.search(r"mining in progress, (.*) ]\\x1b", str(data)).group(1)
+        average_speed = re.search(r"average speed: (.*) Mhash/s", str(info)).group(1)
+        return average_speed
+    except:
+        return ''

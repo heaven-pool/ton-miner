@@ -46,13 +46,15 @@ class Worker(threading.Thread):
 
                 logger.info(f"Miner is Running!")
                 logger.info(f"Worker {job}")
+                hash_rate = ''
                 try:
                     while self.process:
                         output = self.process.stderr.readline()
-                        if output:
-                            logger.info(output)
+                        if output and utils.parse_log_to_hashrate(output):
+                            hash_rate = utils.parse_log_to_hashrate(output)
+                            logger.info(output + ', average speed:'+hash_rate)
 
-                    result = self.worker._generate_job_result()
+                    result = self.worker._generate_job_result(hash_rate)
                     self.result_queue.put(result)
                     logger.info(f"Try to submit result! ... {result}")
                 except FileNotFoundError:

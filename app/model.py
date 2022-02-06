@@ -24,7 +24,7 @@ class JobResultSchema(BaseModel):
     computer_name: str
     computer_uuid: str
     gpu_uuid: str
-    hash_rate: int
+    hash_rate: float  # MHz
     boc: str
 
 
@@ -48,7 +48,7 @@ class GPUWorkerSchema(BaseModel):
     def _add_job(self, job: JobSchema) -> JobResultSchema:
         self.job = job
 
-    def _generate_job_result(self):
+    def _generate_job_result(self, hash_rate):
         contexts = ''
         with open(self.boc_name, 'r') as f:
             contexts = f.read()
@@ -59,7 +59,7 @@ class GPUWorkerSchema(BaseModel):
             computer_name=self.computer_name,
             computer_uuid=self.computer_uuid,
             gpu_uuid=self.gpu_id,
-            hash_rate=666,
+            hash_rate=hash_rate,
             boc=contexts,
         )
         return result
