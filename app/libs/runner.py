@@ -82,7 +82,6 @@ class JobManager(threading.Thread):
 
     def run(self):
         ts = datetime.now()
-        # TODO: handle result queue
         while True:
             # get job
             if (datetime.now()-ts).total_seconds() > self.job_expiration:
