@@ -1,15 +1,15 @@
-import platform
-import requests
-import zipfile
-from pathlib import Path
-import os
 import glob
+import os
+import platform
 import re
 import shutil
 import tarfile
-from loguru import logger
-from utils import get_ubuntu_version, get_os_type
+import zipfile
+from pathlib import Path
 
+import requests
+from loguru import logger
+from libs.utils import get_os_type, get_ubuntu_version
 
 VERSION = '20211230.1'
 BASE_URL = f'https://github.com/tontechio/pow-miner-gpu/releases/download/{VERSION}'

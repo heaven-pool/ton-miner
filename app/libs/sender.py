@@ -1,8 +1,8 @@
 import os
 from urllib.parse import urljoin
 
-from libs import models
 import requests
+from libs import models
 from loguru import logger
 
 REGISTRY_API = '/registry'

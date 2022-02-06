@@ -8,8 +8,9 @@ import threading
 import time
 from datetime import datetime
 
-from libs import config, models, utils, sender
+from libs import config, models, sender, utils
 from loguru import logger
+
 
 class Worker(threading.Thread):
     def __init__(self, worker: models.GPUWorkerSchema, job_queue, result_queue,):

@@ -8,10 +8,8 @@ import threading
 import time
 from datetime import datetime
 
-from libs import runner, config
+from libs import config, runner
 from loguru import logger
-
-
 
 if __name__ == "__main__":
     miner = config.init(sys.argv[1:])

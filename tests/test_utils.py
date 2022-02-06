@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from app.lib import utils
 import pytest
+from app.lib import utils
 
 
 @pytest.mark.parametrize("test_input, expected", [

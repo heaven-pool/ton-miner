@@ -1,8 +1,9 @@
-import re
-import platform
-from pathlib import Path
-from loguru import logger
 import os
+import platform
+import re
+from pathlib import Path
+
+from loguru import logger
 
 APP_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parent
 
