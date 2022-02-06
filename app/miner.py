@@ -8,15 +8,17 @@ import threading
 import time
 from datetime import datetime
 
-import config
-import model
-import utils
-import sender
+from app.libs import config, models, utils, sender
+# import config
+# import models
+# import utils
+# import sender
+# from . import config, models, utils, sender
 from loguru import logger
 
 
 class Worker(threading.Thread):
-    def __init__(self, worker: model.GPUWorkerSchema, job_queue, result_queue,):
+    def __init__(self, worker: models.GPUWorkerSchema, job_queue, result_queue,):
         threading.Thread.__init__(self)
         self.worker = worker
         self.job_queue = job_queue
@@ -32,7 +34,7 @@ class Worker(threading.Thread):
         while True:
             if not self.job_queue.empty():
                 # get job
-                job = model.JobSchema.parse_obj(self.job_queue.get())
+                job = models.JobSchema.parse_obj(self.job_queue.get())
                 self.worker._add_job(job)
 
                 # get bin path and argument
@@ -79,7 +81,7 @@ class Worker(threading.Thread):
 
 
 class JobManager(threading.Thread):
-    def __init__(self, miner: model.MinerSchema, job_queue, result_queue, job_expiration):
+    def __init__(self, miner: models.MinerSchema, job_queue, result_queue, job_expiration):
         threading.Thread.__init__(self)
         self.miner = miner
         self.job_queue = job_queue
@@ -114,14 +116,14 @@ class JobManager(threading.Thread):
 
 
 def create_job_manager(
-        miner: model.MinerSchema, job_queue: queue.Queue, result_queue: queue.Queue, job_expiration: int):
+        miner: models.MinerSchema, job_queue: queue.Queue, result_queue: queue.Queue, job_expiration: int):
     job_mgr = JobManager(miner, job_queue, result_queue, job_expiration)
     job_mgr.setDaemon(True)
     job_mgr.start()
     return job_mgr
 
 
-def create_worker(miner: model.MinerSchema, job_queue: queue.Queue, result_queue: queue.Queue,):
+def create_worker(miner: models.MinerSchema, job_queue: queue.Queue, result_queue: queue.Queue,):
     worker_pools = []
     workers = miner._create_wokers()
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from app import utils
+from app.lib import utils
 import pytest
 
 

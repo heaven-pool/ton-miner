@@ -2,7 +2,7 @@
 # import os
 # from pathlib import Path
 
-# from app import model
+# from app import models
 
 # ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # BASE_DIR = (os.path.dirname(os.path.abspath(__file__)))
@@ -12,7 +12,7 @@
 # def test_miner_model():
 
 #     config_file = Path(DATA_DIR, "miner.json")
-#     model_data = model.MinerSchema.parse_file(config_file)
+#     model_data = models.MinerSchema.parse_file(config_file)
 
 #     assert model_data.pool_wallet == b"EQB6UzwFx-gZTIZmJmiFWZ7_qTIZ9RwBaR1_2IPtKR4UuAoJ"
 #     assert model_data.miner_wallet == b"EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq"
