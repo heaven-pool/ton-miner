@@ -85,12 +85,14 @@ class JobManager(threading.Thread):
         while True:
             # get job
             if (datetime.now()-ts).total_seconds() > self.job_expiration:
+                logger.debug(f"Job expiration")
                 while not self.job_queue.empty():
                     self.job_queue.get()
                 for i in range(len(self.miner.devices)):
                     self.job_queue.put(sender.job(self.miner))
                 ts = datetime.now()
             elif self.job_queue.qsize() < len(self.miner.devices):
+                logger.debug(f"Job amount is too low")
                 for i in range(self.job_queue.qsize(), len(self.miner.devices)):
                     self.job_queue.put(sender.job(self.miner))
                 ts = datetime.now()
@@ -102,7 +104,7 @@ class JobManager(threading.Thread):
                     logger.info(f"Result submit: {result}")
                     sender.submit(self.miner, result)
 
-            logger.info(f"Job/Result in queue: {self.job_queue.qsize()}/{self.result_queue.qsize()}")
+            logger.debug(f"Job/Result in queue: {self.job_queue.qsize()}/{self.result_queue.qsize()}")
             time.sleep(1)
 
 
