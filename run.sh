@@ -1,11 +1,7 @@
-# /hive/miners/custom/test_build/miner/
-# /hive/miners/custom/tonminer_cuda_hiveos_x86_64/assets
-# ~/hive/miners/custom/test_build/miner/build_minner/builder.sh
+VERTION=0.2.5
+URL=https://ton-dev.heaven-pool.com
+WALLET=EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq
 
-VERTION=0.1.0
-URL=https://mining-mission.rich-thinking.com
-# URL=https://next.ton-pool.com
-WALLET=EQB6UzwFx-gZTIZmJmiFWZ7_qTIZ9RwBaR1_2IPtKR4UuAoJ
 MINNER=ton-heaven-pool-miner
 OS_VERSION=hiveos
 FOLDER_NAME=${MINNER}-${VERTION}
@@ -14,41 +10,16 @@ ZIP_NAME=${FOLDER_NAME}-${OS_VERSION}
 
 hiveos_env() {
     apt install -y python3-pip git
-
     pip3 install requests pyinstaller
-    pip3 install "numpy<1.15"
-    pip3 install "pyopencl<2018.3"
-}
-
-run_py() {
-    cd src/app
-    python3 miner.py ${URL} ${WALLET}
-}
-
-run_bin() {
-    cd src/app
-    ./bin/miner-linux ${URL} ${WALLET}
 }
 
 run_build() {
-    rm -rf ./bin ./dist ./build
-    mkdir ./bin
-    cp ./config/* ./bin/
-
-    pyinstaller --clean --onefile --add-data "hash_solver.cl:." --add-data "sha256.cl:." --name miner-linux miner.py
-    cp ./dist/miner-linux ./bin/miner-linux
-}
-
-zip_bin () {
-    mkdir -p ${FOLDER_NAME}
-    cp -a ./bin/. ./${FOLDER_NAME}/
-    tar -zcv --exclude='.DS_Store' -f ${ZIP_NAME}.tar.gz ${FOLDER_NAME}
+    rm -rf ${FOLDER_NAME} ${ZIP_NAME}
 }
 
 zip () {
     mkdir -p ${FOLDER_NAME}
-    cp -a ./bin/. ./${FOLDER_NAME}/
-    cp ./ton-pool.com-miner-0.3.2/miner-linux ./${FOLDER_NAME}/miner-linux
+    cp -r ./${MINNER}/ ${FOLDER_NAME}
     tar -zcv --exclude='.DS_Store' -f ${ZIP_NAME}.tar.gz ${FOLDER_NAME}
 }
 
@@ -57,8 +28,25 @@ run_pak() {
     zip
 }
 
-copy(){
-    scp x9HJxXms2odJnRmFF7YELrjzE0A4xQAD8ph76qFI@shell.hiveos.farm:/hive/miners/custom/test_build/miner/ton-heaven-pool* .
+qq (){
+    run_pak
+    release
+}
+
+release(){
+    gh release create ${VERTION} \
+    --notes "regular release" \
+    -t ${ZIP_NAME}-release \
+    ${ZIP_NAME}.tar.gz \
+    -R git@github.com:qwedsazxc78/ton-heaven-pool-miner.git
+}
+
+bin() {
+    ./bin/hiveos/miner --pool ${URL} ${WALLET}
+}
+
+py() {
+    poetry run python ./app/main.py --pool ${URL} --debug ${WALLET}
 }
 
 "$@"
