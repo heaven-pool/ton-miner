@@ -109,7 +109,7 @@ class JobManager(threading.Thread):
 
 
 def create_job_manager(
-        miner: models.MinerSchema, job_queue: queue.Queue, result_queue: queue.Queue, job_expiration: int):
+        miner: models.MinerSchema, job_queue: queue.Queue, result_queue: queue.Queue, job_expiration: int = 900):
     job_mgr = JobManager(miner, job_queue, result_queue, job_expiration)
     job_mgr.setDaemon(True)
     job_mgr.start()

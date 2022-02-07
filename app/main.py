@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     task_queue = queue.Queue()
     result_queue = queue.Queue()
-    job_manager = runner.create_job_manager(miner, task_queue, result_queue, 10)
+    job_manager = runner.create_job_manager(miner, task_queue, result_queue)
     work_pools = runner.create_worker(miner, task_queue, result_queue)
 
     graceful = runner.Graceful()
