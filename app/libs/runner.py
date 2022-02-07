@@ -7,7 +7,7 @@ import sys
 import threading
 import time
 from datetime import datetime
-
+from shlex import split
 from libs import config, models, sender, utils
 from loguru import logger
 
@@ -35,10 +35,10 @@ class Worker(threading.Thread):
                 # get bin path and argument
                 power_argument = self.worker._cmd()
                 miner_bin_path = utils.get_miner_bin_path(self.worker.gpu_device)
+                power_cmd = split(f"{miner_bin_path} {power_argument}")
                 logger.debug(self.worker.gpu_device)
-                logger.debug(miner_bin_path)
+                logger.debug(power_cmd)
 
-                power_cmd = f"{miner_bin_path} {power_argument}".split(' ')
                 self.process = subprocess.Popen(power_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 logger.info(f"Miner is Running!")
@@ -62,7 +62,7 @@ class Worker(threading.Thread):
                         raise FileNotFoundError
                 except FileNotFoundError:
                     outs, errs = self.process.communicate()
-                    logger.info(f"power doesn't generate boc file ... {outs}, {errs}")
+                    logger.info(f"Power doesn't generate boc file ... {outs}, {errs}")
                     self.process.terminate()
                     self.process.wait()
                 except subprocess.TimeoutExpired:
@@ -83,6 +83,7 @@ class JobManager(threading.Thread):
         self.job_queue = job_queue
         self.result_queue = result_queue
         self.job_expiration = job_expiration
+        self.total_shares = 0
 
     def run(self):
         ts = datetime.now()
@@ -105,8 +106,9 @@ class JobManager(threading.Thread):
             if self.result_queue.qsize() > 0:
                 for i in range(self.result_queue.qsize()):
                     result = self.result_queue.get()
-                    logger.info(f"Result submit: {result}")
-                    sender.submit(self.miner, result)
+                    count = sender.submit(self.miner, result)
+                    self.total_shares += count
+                    logger.info(f"Result submit: {result}, shares: {self.total_shares}")
 
             logger.debug(f"Job/Result in queue: {self.job_queue.qsize()}/{self.result_queue.qsize()}")
             time.sleep(1)
@@ -147,3 +149,14 @@ class Graceful:
 
     def you_may_die(self, *args):
         self.rip = True
+
+
+# TODO:
+# hiveos report
+# json.dump({
+#     'total': (b[1] - a[1]) / ct / 10**3,
+#     'rates': rates,
+#     'uptime': time.time() - start_time,
+#     'accepted': shares_accepted,
+#     'rejected': shares_count - shares_accepted,
+# }, open('stats.json', 'w'))

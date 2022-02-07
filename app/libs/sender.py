@@ -35,12 +35,11 @@ def job(miner: models.MinerSchema) -> models.JobSchema:
     try:
         r = requests.get(api_url, timeout=10)
         response = r.json()
-        # TODO: handle status code
     except Exception as e:
         logger.warning('Failed to connect to pool: ' + str(e))
-
-    job = models.JobSchema.parse_obj(response)
-    return job
+    else:
+        job = models.JobSchema.parse_obj(response)
+        return job
 
 
 def submit(miner: models.MinerSchema, result: models.JobResultSchema):
@@ -49,6 +48,7 @@ def submit(miner: models.MinerSchema, result: models.JobResultSchema):
 
     try:
         r = requests.post(api_url, data=result.json(), timeout=10)
-        # TODO: handle status code
     except Exception as e:
         logger.warning('Failed to connect to pool: ' + str(e))
+    else:
+        return 1 if r.ok else 0
