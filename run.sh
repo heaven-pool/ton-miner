@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 VERTION=0.2.5
 URL=https://ton-dev.heaven-pool.com
 WALLET=EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq
@@ -12,8 +14,21 @@ hiveos_env() {
     curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
 }
 
-run_build() {
+build() {
+    cd app/
+
+    rm -rf ../bin ./dist ./build
     rm -rf ${FOLDER_NAME} ${ZIP_NAME}
+
+    mkdir -p ../bin/hiveos/assets/ ../bin/ubuntu18/assets/ ../bin/ubuntu20/assets/
+    cp -r ../config/* ../bin/
+
+    poetry run pyinstaller --clean --onefile \
+        --add-data "libs/*:libs" --add-data "assets/*:assets" \
+        --name miner main.py
+    cp ./dist/miner ../bin/hiveos/miner
+    cp ./dist/miner ../bin/ubuntu18/miner
+    cp ./dist/miner ../bin/ubuntu20/miner
 }
 
 zip () {
@@ -22,14 +37,9 @@ zip () {
     tar -zcv --exclude='.DS_Store' -f ${ZIP_NAME}.tar.gz ${FOLDER_NAME}
 }
 
-run_pak() {
-    run_build
+pak() {
+    build
     zip
-}
-
-qq (){
-    run_pak
-    release
 }
 
 release(){
@@ -37,7 +47,12 @@ release(){
     --notes "regular release" \
     -t ${ZIP_NAME}-release \
     ${ZIP_NAME}.tar.gz \
-    -R git@github.com:qwedsazxc78/ton-heaven-pool-miner.git
+    -R git@github.com:heaven-pool/ton-miner.git
+}
+
+pak_release (){
+    pak
+    release
 }
 
 bin() {

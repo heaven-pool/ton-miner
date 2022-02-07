@@ -7,7 +7,7 @@ import sys
 import threading
 import time
 from datetime import datetime
-from shlex import split
+import shlex
 from libs import config, models, sender, utils
 from loguru import logger
 
@@ -35,7 +35,8 @@ class Worker(threading.Thread):
                 # get bin path and argument
                 power_argument = self.worker._cmd()
                 miner_bin_path = utils.get_miner_bin_path(self.worker.gpu_device)
-                power_cmd = split(f"{miner_bin_path} {power_argument}")
+                power_cmd = shlex.split(f"{miner_bin_path} {power_argument}",  posix=False)
+                logger.debug(miner_bin_path)
                 logger.debug(self.worker.gpu_device)
                 logger.debug(power_cmd)
 

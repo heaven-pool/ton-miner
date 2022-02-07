@@ -33,18 +33,15 @@ def init_logger(run_params):
 
 def get_device_id(device):
     name = device.name
+    bus = -1
+    slot = -1
     try:
         bus = device.get_info(0x4008)
         slot = device.get_info(0x4009)
-        return f"{name} on PCI bus {bus} slot {slot}"
     except cl.LogicError:
-        pass
-    try:
-        topo = device.get_info(0x4037)
-        return f"{name} on PCI bus {topo.bus} device {topo.device} function {topo.function}"
-    except cl.LogicError:
-        pass
-    return name
+        logger.warning("Failed to get bus and slot, default = 66")
+
+    return name, bus, slot
 
 
 def opencl_devices():
@@ -59,10 +56,11 @@ def opencl_devices():
     for i, platform in enumerate(platforms):
         logger.debug(f"Platform {platform.name}:")
         for j, device in enumerate(platform.get_devices()):
-            dev = get_device_id(device)
-            logger.debug(f"    Device {j}: {dev}")
-            devices.append(f"{platform.name} {dev}")
-            gpus.append(device.get_info(0x4009))
+            name, bus, slot = get_device_id(device)
+            logger.debug(f"    Device {j}: {name} on PCI bus {bus} slot {slot}")
+            if slot != -1:
+                devices.append(f"{platform.name} {name}")
+                gpus.append(slot)
     return devices, gpus
 
 
