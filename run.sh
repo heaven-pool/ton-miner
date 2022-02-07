@@ -1,7 +1,6 @@
 VERTION=0.2.5
 URL=https://ton-dev.heaven-pool.com
 WALLET=EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq
-
 MINNER=ton-heaven-pool-miner
 OS_VERSION=hiveos
 FOLDER_NAME=${MINNER}-${VERTION}
@@ -9,8 +8,8 @@ ZIP_NAME=${FOLDER_NAME}-${OS_VERSION}
 # need to mapping hive os folder definition - so use one more append name -${OS_VERSION}
 
 hiveos_env() {
-    apt install -y python3-pip git
-    pip3 install requests pyinstaller
+    apt install -y curl
+    curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
 }
 
 run_build() {

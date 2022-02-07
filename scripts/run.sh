@@ -1,24 +1,11 @@
-# /hive/miners/custom/test_build/miner/
-# /hive/miners/custom/tonminer_cuda_hiveos_x86_64/assets
-# ~/hive/miners/custom/test_build/miner/build_minner/builder.sh
-
 VERTION=0.1.0
 URL=https://mining-mission.rich-thinking.com
-# URL=https://next.ton-pool.com
 WALLET=EQB6UzwFx-gZTIZmJmiFWZ7_qTIZ9RwBaR1_2IPtKR4UuAoJ
 MINNER=ton-heaven-pool-miner
 OS_VERSION=hiveos
 FOLDER_NAME=${MINNER}-${VERTION}
 ZIP_NAME=${FOLDER_NAME}-${OS_VERSION}
 # need to mapping hive os folder definition - so use one more append name -${OS_VERSION}
-
-hiveos_env() {
-    apt install -y python3-pip git
-
-    pip3 install requests pyinstaller
-    pip3 install "numpy<1.15"
-    pip3 install "pyopencl<2018.3"
-}
 
 run_py() {
     cd src/app
