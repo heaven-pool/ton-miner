@@ -53,9 +53,13 @@ class Worker(threading.Thread):
                             if hash_rate:
                                 logger.info(f'GPU{self.worker.gpu_id} - average hashrate: {hash_rate}')
 
-                    result = self.worker._generate_job_result(hash_rate)
-                    self.result_queue.put(result)
-                    logger.info(f"Try to submit result! ... {result}")
+                    if self.process.returncode == 0:
+                        result = self.worker._generate_job_result(hash_rate)
+                        self.result_queue.put(result)
+                        logger.info(f"Try to submit result! ... {result}")
+                    else:
+                        logger.info(f"Miner renew jobs - no generate boc.")
+                        raise FileNotFoundError
                 except FileNotFoundError:
                     outs, errs = self.process.communicate()
                     logger.info(f"power doesn't generate boc file ... {outs}, {errs}")
