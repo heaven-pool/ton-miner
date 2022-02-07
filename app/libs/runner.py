@@ -102,7 +102,7 @@ class JobManager(threading.Thread):
                     logger.info(f"Result submit: {result}")
                     sender.submit(self.miner, result)
 
-            # logger.info(f"Job/Result in queue: {self.job_queue.qsize()}/{self.result_queue.qsize()}")
+            logger.info(f"Job/Result in queue: {self.job_queue.qsize()}/{self.result_queue.qsize()}")
             time.sleep(1)
 
 
