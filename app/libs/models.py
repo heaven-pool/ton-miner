@@ -4,7 +4,7 @@ import platform
 import uuid
 from pathlib import Path
 from typing import List, Optional
-
+import time
 from pydantic import BaseModel
 
 # Miner -> create GPUWorker
@@ -14,6 +14,7 @@ APP_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parent
 
 
 class JobSchema(BaseModel):
+    create_at: float = time.time()
     job_id: int
     pool_wallet: str
     complexity: str
@@ -23,6 +24,8 @@ class JobSchema(BaseModel):
 
 
 class JobResultSchema(BaseModel):
+    create_at: float
+    update_at: float = time.time()
     job_id: int
     miner_wallet: str
     computer_name: str
@@ -60,6 +63,7 @@ class GPUWorkerSchema(BaseModel):
                 contexts = f.read()
 
         result = JobResultSchema(
+            create_at=self.job.create_at,
             job_id=self.job.job_id,
             miner_wallet=self.miner_wallet,
             computer_name=self.computer_name,
