@@ -25,42 +25,46 @@ class Worker(threading.Thread):
         if self.process:
             self.process.kill()
 
+    def bin_path(self):
+        # get bin path and argument
+        power_argument = self.worker._cmd()
+        miner_bin_path = utils.get_miner_bin_path(self.worker.gpu_device)
+        power_cmd = split(f"{miner_bin_path} {power_argument}")
+        return power_cmd
+
     def run(self):
         while True:
             if not self.job_queue.empty():
+                logger.debug(self.worker.gpu_device)
                 # get job
                 job = models.JobSchema.parse_obj(self.job_queue.get())
                 self.worker._add_job(job)
+                self.process = subprocess.Popen(self.bin_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-                # get bin path and argument
-                power_argument = self.worker._cmd()
-                miner_bin_path = utils.get_miner_bin_path(self.worker.gpu_device)
-                power_cmd = shlex.split(f"{miner_bin_path} {power_argument}",  posix=False)
-                logger.debug(miner_bin_path)
-                logger.debug(self.worker.gpu_device)
-                logger.debug(power_cmd)
-
-                self.process = subprocess.Popen(power_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-                logger.info(f"Miner is Running!")
+                logger.info(f"=========== Miner is Running! ===========")
                 logger.info(f"Worker {job}")
+                logger.debug(self.bin_path)
                 hash_rate = ''
+                task_done = ''
                 try:
                     while self.process.poll() is None:
                         output = self.process.stderr.readline()
                         if output:
                             logger.debug(f'output: {output}')
                             hash_rate = utils.parse_log_to_hashrate(output)
+                            task_done = utils.parse_log_to_done(output)
                             if hash_rate:
                                 logger.info(f'GPU{self.worker.gpu_id} - average hashrate: {hash_rate}')
+                            if task_done:
+                                logger.info(f'GPU{self.worker.gpu_id} - task {task_done}')
 
-                    if self.process.returncode == 0:
+                    if task_done:
+                        logger.info(f"Try to submit result! ... return code: {self.process.returncode}")
                         result = self.worker._generate_job_result(hash_rate)
                         self.result_queue.put(result)
-                        logger.info(f"Try to submit result! ... {result}")
+                        logger.info(f"Submit result! ... {result}")
                     else:
-                        logger.info(f"Miner renew jobs - no generate boc.")
-                        raise FileNotFoundError
+                        logger.warning(f"Task fail to finish! ... return code: {self.process.returncode}")
                 except FileNotFoundError:
                     outs, errs = self.process.communicate()
                     logger.info(f"Power doesn't generate boc file ... {outs}, {errs}")

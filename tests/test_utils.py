@@ -49,3 +49,13 @@ def test_get_gpu_vender(test_input, expected):
 ])
 def test_parse_log_to_hashrate(test_input, expected):
     assert expected == utils.parse_log_to_hashrate(test_input)
+
+
+@pytest.mark.parametrize("test_input, expected", [
+    (b'[ GPU #0: SM 6.1 GeForce GTX 1050 Ti ]\x1b[0m\n', ''),
+    (b'\x1b[1;36m[ 3][t 0][2022-02-05 14:56:58.323761700][Miner.cpp:105]\t[ mining in progress, passed: 5006.4ms, hashes computed: 1769996288, instant speed: 365.831 Mhash/s, average speed: 353.546 Mhash/s ]\x1b[0m\n', ''),
+    (b'[ 3][t 0][2022-02-07 17:50:02.6306916][Miner.cpp:105]\t[ done, passed: 71.6s, hashes computed: 100394860544, instant speed: 1385.999 Mhash/s, average speed: 1402.768 Mhash/s ]\n', 'done'),
+
+])
+def test_parse_log_to_hashrate(test_input, expected):
+    assert expected == utils.parse_log_to_done(test_input)

@@ -94,3 +94,20 @@ def parse_log_to_hashrate(data: str) -> str:
         return average_speed
     except:
         return ''
+
+
+def parse_log_to_done(data: str) -> str:
+    '''
+        input:
+            b'[ 3][t 0][2022-02-07 17:50:02.6306916][Miner.cpp:105]\t[ done, passed: 71.6s, hashes computed: 100394860544, instant speed: 1385.999 Mhash/s, average speed: 1402.768 Mhash/s ]\n'
+        output:
+            done
+    '''
+
+    try:
+        if 'done' in str(data):
+            return 'done'
+        else:
+            return ''
+    except:
+        return ''

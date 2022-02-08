@@ -2,11 +2,13 @@
 import platform
 import uuid
 from typing import List, Optional
-
+from pathlib import Path
 from pydantic import BaseModel
 
 # Miner -> create GPUWorker
 # Job + GPUWorker -> JobResult
+
+APP_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parent
 
 
 class JobSchema(BaseModel):
@@ -50,8 +52,10 @@ class GPUWorkerSchema(BaseModel):
 
     def _generate_job_result(self, hash_rate):
         contexts = ''
-        with open(self.boc_name, 'r') as f:
-            contexts = f.read()
+
+        if os.path.exists(self.boc_name):
+            with open(self.boc_name, 'r') as f:
+                contexts = f.read()
 
         result = JobResultSchema(
             job_id=self.job.job_id,
@@ -81,7 +85,7 @@ class MinerSchema(BaseModel):
             miner_wallet=self.miner_wallet,
             computer_name=self.computer_name,
             computer_uuid=self.computer_uuid,
-            boc_name=f"mined-{gpu}.boc")
+            boc_name=Path(APP_ROOT_PATH, f"mined-{gpu}.boc"),)
             for gpu, device in zip(self.gpus, self.devices)]
 
         return self.workers
