@@ -1,13 +1,14 @@
 import os
 import platform
 import queue
+import shlex
 import signal
 import subprocess
 import sys
 import threading
 import time
 from datetime import datetime
-import shlex
+
 from libs import config, models, sender, utils
 from loguru import logger
 
@@ -29,7 +30,7 @@ class Worker(threading.Thread):
         # get bin path and argument
         power_argument = self.worker._cmd()
         miner_bin_path = utils.get_miner_bin_path(self.worker.gpu_device)
-        power_cmd = split(f"{miner_bin_path} {power_argument}")
+        power_cmd = shlex.split(f"{miner_bin_path} {power_argument}", posix=False)
         return power_cmd
 
     def run(self):
@@ -39,11 +40,11 @@ class Worker(threading.Thread):
                 # get job
                 job = models.JobSchema.parse_obj(self.job_queue.get())
                 self.worker._add_job(job)
-                self.process = subprocess.Popen(self.bin_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                self.process = subprocess.Popen(self.bin_path(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 logger.info(f"=========== Miner is Running! ===========")
                 logger.info(f"Worker {job}")
-                logger.debug(self.bin_path)
+                logger.debug(self.bin_path())
                 hash_rate = ''
                 task_done = ''
                 try:
@@ -60,7 +61,7 @@ class Worker(threading.Thread):
 
                     if task_done:
                         logger.info(f"Try to submit result! ... return code: {self.process.returncode}")
-                        result = self.worker._generate_job_result(hash_rate)
+                        result = self.worker._generate_job_result(float(hash_rate))
                         self.result_queue.put(result)
                         logger.info(f"Submit result! ... {result}")
                     else:
@@ -115,7 +116,8 @@ class JobManager(threading.Thread):
                     self.total_shares += count
                     logger.info(f"Result submit: {result}, shares: {self.total_shares}")
 
-            logger.debug(f"Job/Result in queue: {self.job_queue.qsize()}/{self.result_queue.qsize()}")
+                logger.debug(f"Job/Result in queue: {self.job_queue.qsize()}/{self.result_queue.qsize()}")
+
             time.sleep(1)
 
 

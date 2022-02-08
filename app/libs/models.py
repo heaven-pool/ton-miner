@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-s
+import os
 import platform
 import uuid
-from typing import List, Optional
 from pathlib import Path
+from typing import List, Optional
+
 from pydantic import BaseModel
 
 # Miner -> create GPUWorker
@@ -85,7 +87,7 @@ class MinerSchema(BaseModel):
             miner_wallet=self.miner_wallet,
             computer_name=self.computer_name,
             computer_uuid=self.computer_uuid,
-            boc_name=Path(APP_ROOT_PATH, f"mined-{gpu}.boc"),)
+            boc_name=str(Path(APP_ROOT_PATH, f"mined-{gpu}.boc")),)
             for gpu, device in zip(self.gpus, self.devices)]
 
         return self.workers
