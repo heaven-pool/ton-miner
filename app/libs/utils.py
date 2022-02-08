@@ -111,3 +111,13 @@ def parse_log_to_done(data: str) -> str:
             return ''
     except:
         return ''
+
+
+def readfile_to_hexstring(filepath: str) -> str:
+
+    if os.path.exists(filepath):
+        with open(filepath, 'rb') as f:
+            contexts_binary = f.read()
+            return contexts_binary.hex()
+    else:
+        return ''

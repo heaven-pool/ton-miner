@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 import pytest
 from app.libs import utils
+from pathlib import Path
+import os
+
+DATA_PATH = Path(os.path.dirname(os.path.abspath(__file__)), 'data')
 
 
 @pytest.mark.parametrize("test_input, expected", [
@@ -59,3 +63,14 @@ def test_parse_log_to_hashrate(test_input, expected):
 ])
 def test_parse_log_to_hashrate(test_input, expected):
     assert expected == utils.parse_log_to_done(test_input)
+
+
+@pytest.mark.parametrize("test_input, expected", [
+    (str(Path(DATA_PATH, 'miner.boc')),
+        'b5ee9c724101020100a100014589ff4923ac7e0f74fddf69973ed0a9099d2113ab575d92f82b0b0445e0994b2553580c010'
+        + '0f24d696e650061bb618e5690d2aacc203003dbe333046683b698ef945ff250723c0f73297a2a1a41e2f1e0af0082da653'
+        + '22d1b2ce87eca953a4d74f96cea303b34d6497980c136d82144acda33755876665780bae9be8a4d6385e0af0082da65322'
+        + 'd1b2ce87eca953a4d74f96cea303b34d6497980c136d82144eb712649'),
+])
+def test_readfile_to_hexstring(test_input, expected):
+    assert expected == utils.readfile_to_hexstring(test_input)
