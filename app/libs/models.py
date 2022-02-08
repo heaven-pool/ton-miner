@@ -75,7 +75,7 @@ class MinerSchema(BaseModel):
     pool_url: str
     miner_wallet: str
     computer_name: str = platform.node()
-    computer_uuid: str = hex(uuid.getnode())  # mac address
+    computer_uuid: str = str(uuid.UUID(int=uuid.getnode()))  # mac address
     devices: List[str]
     gpus: List[str]
     workers: Optional[List[GPUWorkerSchema]]

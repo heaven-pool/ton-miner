@@ -52,11 +52,11 @@ class Worker(threading.Thread):
                         output = self.process.stderr.readline()
                         if output:
                             logger.debug(f'output: {output}')
-                            hash_rate = utils.parse_log_to_hashrate(output)
-                            task_done = utils.parse_log_to_done(output)
-                            if hash_rate:
-                                logger.info(f'GPU{self.worker.gpu_id} - average hashrate: {hash_rate}')
-                            if task_done:
+                            if utils.parse_log_to_hashrate(output):
+                                hash_rate = utils.parse_log_to_hashrate(output)
+                                logger.info(f'GPU{self.worker.gpu_id} - average hashrate: {hash_rate} Mhash/s')
+                            if utils.parse_log_to_done(output):
+                                task_done = utils.parse_log_to_done(output)
                                 logger.info(f'GPU{self.worker.gpu_id} - task {task_done}')
 
                     if task_done:

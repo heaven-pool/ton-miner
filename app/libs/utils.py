@@ -76,7 +76,7 @@ def get_miner_bin_path(gpu_info: str) -> Path:
 
 def parse_log_to_hashrate(data: str) -> str:
     '''
-        input:
+        input:x`
             b'[ GPU #0: SM 6.1 GeForce GTX 1050 Ti ]\x1b[0m\n'
             b'\x1b[1;36m[ 3][t 0][2022-02-05 14:56:53.316578448][pow-miner.cpp:388]\t[ expected required hashes for success: 29301469717946154 ]\x1b[0m\n'
             b'\x1b[1;33m[ 2][t 0][2022-02-05 14:56:53.494029473][credits.cu:29]\t[ START MINER, GPU ID: 0, boost factor: 16, throughput: 8388608 ]\x1b[0m\n'
@@ -89,7 +89,7 @@ def parse_log_to_hashrate(data: str) -> str:
     '''
 
     try:
-        info = re.search(r"mining in progress, (.*) ]\\x1b", str(data)).group(1)
+        info = re.search(r"mining in progress, (.*) \]", str(data)).group(1)
         average_speed = re.search(r"average speed: (.*) Mhash/s", str(info)).group(1)
         return average_speed
     except:
