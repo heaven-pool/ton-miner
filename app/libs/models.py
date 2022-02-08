@@ -59,8 +59,9 @@ class GPUWorkerSchema(BaseModel):
         contexts = ''
 
         if os.path.exists(self.boc_name):
-            with open(self.boc_name, 'r') as f:
-                contexts = f.read()
+            with open('mined.boc', 'rb') as f:
+                contexts_binary = f.read()
+                contexts = contexts_binary.hex()
 
         result = JobResultSchema(
             create_at=self.job.create_at,
