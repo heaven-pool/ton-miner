@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
-rm -rf ../bin
-mkdir ../bin
-cp ../config/* ../bin/
+cd app/
 
+rm -rf ../bin
 rm -rf ./dist ./build
 
-pyinstaller --clean --onefile --name miner-linux miner.py
-cp ./dist/miner-linux ../bin/miner-linux
+mkdir -p ../bin/hiveos/assets/ ../bin/ubuntu18/assets/ ../bin/ubuntu20/assets/
+cp -r ../config/* ../bin/
+
+poetry run pyinstaller --onefile \
+    --add-data "libs/*:libs" --add-data "assets/*:assets" \
+    --name miner main.py
+cp ./dist/miner ../bin/hiveos/miner
+cp ./dist/miner ../bin/ubuntu18/miner
+cp ./dist/miner ../bin/ubuntu20/miner
