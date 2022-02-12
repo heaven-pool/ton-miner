@@ -1,14 +1,11 @@
 import glob
 import os
-import platform
-import re
 import shutil
 import tarfile
 import zipfile
 from pathlib import Path
 
 import requests
-from libs.utils import get_os_type, get_ubuntu_version
 from loguru import logger
 
 VERSION = '20211230.1'

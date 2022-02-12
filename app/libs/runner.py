@@ -1,15 +1,13 @@
-import os
 import platform
 import queue
 import shlex
 import signal
 import subprocess
-import sys
 import threading
 import time
 from datetime import datetime
 
-from libs import config, models, sender, utils
+from libs import models, sender, utils
 from loguru import logger
 
 

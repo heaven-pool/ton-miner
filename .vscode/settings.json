@@ -1,11 +1,11 @@
 {
-    "python.linting.pylamaEnabled": true,
-    "python.linting.enabled": false,
-    "cSpell.words": [
-        "cuda",
-        "opencl"
-    ],
-    "python.testing.pytestArgs": [],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+  "cSpell.words": [
+    "cuda",
+    "opencl"
+  ],
+  "python.linting.enabled": false,
+  "python.linting.pylamaEnabled": true,
+  "python.testing.pytestArgs": [],
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false
 }

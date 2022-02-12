@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-s
 import os
 import platform
+import time
 import uuid
 from pathlib import Path
 from typing import List, Optional
-import time
+
+from libs import utils
 from pydantic import BaseModel
 
 # Miner -> create GPUWorker

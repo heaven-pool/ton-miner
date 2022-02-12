@@ -1,0 +1,58 @@
+repos:
+  - repo: "https://github.com/pre-commit/pre-commit-hooks"
+    rev: v3.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-xml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: requirements-txt-fixer
+      - id: pretty-format-json
+        args: [--autofix]
+      - id: detect-private-key
+      - id: sort-simple-yaml
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.8.0
+    hooks:
+      - id: isort
+        args: [--filter-files]
+        files: \.py$
+
+  - repo: https://github.com/pre-commit/mirrors-autopep8
+    rev: v1.5.7 # Use the sha / tag you want to point at
+    hooks:
+      - id: autopep8
+        args: [--in-place, --recursive, --max-line-length=140, --exclude="*/migrations/*"]
+
+  - repo: https://github.com/myint/autoflake
+    rev: v1.4
+    hooks:
+      - id: autoflake
+        args: [--in-place, --remove-all-unused-imports, --remove-unused-variable, --exclude, '*/alembic/*']
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
+    rev: v1.0.4
+    hooks:
+      - id: python-bandit-vulnerability-check
+        args: [-l, --recursive, -x, tests]
+        files: .py$
+
+  - repo: https://github.com/pryorda/dockerfilelint-precommit-hooks
+    rev: v0.1.0
+    hooks:
+      - id: dockerfilelint
+        stages: [commit]
+
+  - repo: local
+    hooks:
+      - id: linter
+        name: linter
+        entry: python -m pylama
+        args: [-o, setup.cfg]
+        language: system
+        types: [python]

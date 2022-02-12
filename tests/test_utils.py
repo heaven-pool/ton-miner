@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+import os
+from pathlib import Path
+
 import pytest
 from app.libs import utils
-from pathlib import Path
-import os
 
 DATA_PATH = Path(os.path.dirname(os.path.abspath(__file__)), 'data')
 
