@@ -6,7 +6,7 @@ import uuid
 from pathlib import Path
 from typing import List, Optional
 
-import libs.utils
+from libs import utils
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
