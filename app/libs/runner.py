@@ -98,12 +98,16 @@ class JobManager(threading.Thread):
                 while not self.job_queue.empty():
                     self.job_queue.get()
                 for i in range(len(self.miner.devices)):
-                    self.job_queue.put(sender.job(self.miner))
+                    job = sender.job(self.miner)
+                    if job:
+                        self.job_queue.put(job)
                 ts = datetime.now()
             elif self.job_queue.qsize() < len(self.miner.devices):
                 logger.debug(f"Job amount is too low")
                 for i in range(self.job_queue.qsize(), len(self.miner.devices)):
-                    self.job_queue.put(sender.job(self.miner))
+                    job = sender.job(self.miner)
+                    if job:
+                        self.job_queue.put(job)
                 ts = datetime.now()
 
             # submit
