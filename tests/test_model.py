@@ -2,19 +2,20 @@
 # import os
 # from pathlib import Path
 
-# from app import models
-
-# ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-# BASE_DIR = (os.path.dirname(os.path.abspath(__file__)))
-# DATA_DIR = Path(BASE_DIR, 'data')
+from app.libs import models
 
 
-# def test_miner_model():
+def test_miner_model():
+    obj1 = models.JobSchema(
+        job_id=661422, pool_wallet='EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq',
+        complexity='1906156863157627903919216023423475890402376096793739878410580',
+        seed='328574290144741374257957134907128616586', iterations='100000000000',
+        giver_address='kf-P_TOdwcCh0AXHhBpICDMxStxHenWdLCDLNH5QcNpwMHJ8',)
 
-#     config_file = Path(DATA_DIR, "miner.json")
-#     model_data = models.MinerSchema.parse_file(config_file)
+    obj2 = models.JobSchema(
+        job_id=661422, pool_wallet='EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq',
+        complexity='1906156863157627903919216023423475890402376096793739878410580',
+        seed='328574290144741374257957134907128616586', iterations='100000000000',
+        giver_address='kf-P_TOdwcCh0AXHhBpICDMxStxHenWdLCDLNH5QcNpwMHJ8',)
 
-#     assert model_data.pool_wallet == b"EQB6UzwFx-gZTIZmJmiFWZ7_qTIZ9RwBaR1_2IPtKR4UuAoJ"
-#     assert model_data.miner_wallet == b"EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq"
-#     assert model_data.computer_uuid == b"0x1e0062221865"
-#     assert "1" in model_data.GPUs
+    assert obj1.create_at != obj2.create_at

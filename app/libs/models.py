@@ -6,7 +6,7 @@ import uuid
 from pathlib import Path
 from typing import List, Optional
 
-from libs import utils
+from app.libs import utils
 from pydantic import BaseModel, Field
 from typing_extensions import Annotated
 
@@ -17,7 +17,7 @@ APP_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parent
 
 
 class JobSchema(BaseModel):
-    create_at: Annotated[float, Field(default_factory=time.time)]
+    create_at: Annotated[float, Field(default_factory=lambda: time.time())]
     job_id: int
     pool_wallet: str
     complexity: str
@@ -28,7 +28,7 @@ class JobSchema(BaseModel):
 
 class JobResultSchema(BaseModel):
     create_at: float
-    update_at: Annotated[float, Field(default_factory=time.time)]
+    update_at: Annotated[float, Field(default_factory=lambda: time.time())]
     job_id: int
     miner_wallet: str
     computer_name: str
