@@ -36,7 +36,8 @@ class Worker(threading.Thread):
             if not self.job_queue.empty():
                 logger.debug(self.worker.gpu_device)
                 # get job
-                job = models.JobSchema.parse_obj(self.job_queue.get())
+                # job = models.JobSchema.parse_obj(self.job_queue.get())
+                job = self.job_queue.get()
                 self.worker._add_job(job)
                 self.process = subprocess.Popen(self.bin_path(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
