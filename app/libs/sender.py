@@ -50,4 +50,6 @@ def submit(miner: models.MinerSchema, result: models.JobResultSchema):
     except Exception as e:
         logger.warning('Failed to connect to pool: ' + str(e))
     else:
+        if not r.ok:
+            logger.warning('Failed to connect to pool: ' + str(r.text))
         return 1 if r.ok else 0
