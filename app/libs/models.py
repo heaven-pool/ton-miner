@@ -17,7 +17,7 @@ APP_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parent
 
 
 class JobSchema(BaseModel):
-    create_at: Annotated[float, Field(default_factory=lambda: time.time())]
+    create: Annotated[float, Field(default_factory=lambda: time.time())]
     job_id: int
     pool_wallet: str
     complexity: str
@@ -27,8 +27,8 @@ class JobSchema(BaseModel):
 
 
 class JobResultSchema(BaseModel):
-    create_at: float
-    update_at: Annotated[float, Field(default_factory=lambda: time.time())]
+    create: float
+    update: float
     job_id: int
     miner_wallet: str
     computer_name: str
@@ -61,7 +61,8 @@ class GPUWorkerSchema(BaseModel):
     def _generate_job_result(self, hash_rate):
         contexts = utils.readfile_to_hexstring(self.boc_name)
         result = JobResultSchema(
-            create_at=self.job.create_at,
+            create=self.job.create,
+            update=time.time(),
             job_id=self.job.job_id,
             miner_wallet=self.miner_wallet,
             computer_name=self.computer_name,
