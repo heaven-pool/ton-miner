@@ -5,7 +5,7 @@
 from app.libs import models
 
 
-def test_miner_model():
+def test_job_models():
     obj1 = models.JobSchema(
         job_id=661422, pool_wallet='EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq',
         complexity='1906156863157627903919216023423475890402376096793739878410580',
