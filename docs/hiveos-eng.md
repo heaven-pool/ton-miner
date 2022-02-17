@@ -1,6 +1,6 @@
 # TON Heaven Pool - Hive OS setting process
 
-## 飛行儀表板設定步驟
+## Flightsheet setup
 
 ![alt text](https://github.com/qwedsazxc78/ton-heaven-pool-miner/blob/main/image/%E9%A3%9B%E8%A1%8C%E5%84%80%E8%A1%A8%E6%9D%BF%E8%A8%AD%E5%AE%9A.png?raw=true)
 
