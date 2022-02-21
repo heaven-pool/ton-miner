@@ -53,7 +53,7 @@ def opencl_devices():
 
     devices = []
     gpus = []
-    for i, platform in enumerate(platforms):
+    for platform in platforms:
         logger.debug(f"Platform {platform.name}:")
         for j, device in enumerate(platform.get_devices()):
             name, bus, slot = get_device_id(device)
@@ -85,5 +85,6 @@ def init(argv):
         pool_url=params.pool,
         miner_wallet=params.wallet,
         devices=devices,
-        gpus=gpus)
+        gpus=gpus,
+    )
     return miner

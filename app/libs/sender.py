@@ -34,7 +34,7 @@ def job(miner: models.MinerSchema) -> models.JobSchema:
     try:
         r = requests.get(api_url, timeout=10)
         response = r.json()
-    except Exception as e:
+    except requests.RequestException as e:
         logger.warning('Failed to connect to pool: ' + str(e))
     else:
         if r.ok:
@@ -50,9 +50,9 @@ def submit(miner: models.MinerSchema, result: models.JobResultSchema):
 
     try:
         r = requests.post(api_url, data=result.json(), timeout=10)
-    except Exception as e:
+    except requests.RequestException as e:
         logger.warning('Failed to connect to pool: ' + str(e))
     else:
         if not r.ok:
             logger.warning('Failed to connect to pool: ' + str(r.text))
-        return 1 if r.ok else 0
+        return 1 if r.ok else 0  # TODO count should be decided by caller

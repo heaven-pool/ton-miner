@@ -1,17 +1,16 @@
-import os
 import platform
 import re
 from pathlib import Path
 
 from loguru import logger
 
-APP_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parent
+APP_ROOT_PATH = Path(__file__).parents[1].resolve()
 
 
 def get_ubuntu_version(version_id: str):
-    if re.search('20', version_id):
+    if '20' in version_id:
         return 'ubuntu20'
-    elif re.search('18', version_id):
+    elif '18' in version_id:
         return 'ubuntu18'
     else:
         raise NotImplementedError(version_id)
@@ -47,14 +46,15 @@ def get_os_type():
 
 def get_bin_path(os_type: str, binfile: str) -> Path:
     if os_type == 'windows':
-        return Path(APP_ROOT_PATH, 'assets', f'win-{binfile}.exe')
-    elif os_type == 'ubuntu18' or os_type == 'hiveos':
-        return Path(APP_ROOT_PATH, 'assets', f'ubuntu18-{binfile}')
+        file_name = f'win-{binfile}.exe'
+    elif os_type in ('ubuntu18', 'hiveos'):
+        file_name = f'ubuntu18-{binfile}'
     elif os_type == 'ubuntu20':
-        return Path(APP_ROOT_PATH, 'assets', f'ubuntu20-{binfile}')
+        file_name = f'ubuntu20-{binfile}'
     else:
         logger.error(f'gpu does not be executable {binfile}')
         raise NotImplementedError(uname)
+    return Path(APP_ROOT_PATH, 'assets', file_name)
 
 
 def get_gpu_vender(gpu_info: str):
@@ -87,12 +87,11 @@ def parse_log_to_hashrate(data: str) -> str:
         output:
             hashrate
     '''
-
     try:
         info = re.search(r"mining in progress, (.*) \]", str(data)).group(1)
         average_speed = re.search(r"average speed: (.*) Mhash/s", str(info)).group(1)
         return average_speed
-    except:
+    except Exception:
         return ''
 
 
@@ -103,19 +102,17 @@ def parse_log_to_done(data: str) -> str:
         output:
             done
     '''
-
     try:
         if 'done' in str(data):
             return 'done'
         else:
             return ''
-    except:
+    except Exception:
         return ''
 
 
 def readfile_to_hexstring(filepath: str) -> str:
-
-    if os.path.exists(filepath):
+    if Path(filepath).exists():
         with open(filepath, 'rb') as f:
             contexts_binary = f.read()
             return contexts_binary.hex()

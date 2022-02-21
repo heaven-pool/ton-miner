@@ -1,5 +1,4 @@
 import glob
-import os
 import shutil
 import tarfile
 import zipfile
@@ -35,7 +34,7 @@ MINER_TOOLS = {
 
 IGNORE_PATTENS = ['*.sh', 'tonlib*', '*.service', 'release.json', '*.conf', '*.json', '*.md']
 
-PROJECT_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parents[0]
+PROJECT_ROOT_PATH = Path(__file__).parents[1].resolve()
 
 
 def download_url(url, dst_folder, chunk_size=128):
@@ -50,14 +49,14 @@ def download_url(url, dst_folder, chunk_size=128):
 
 def create_download_folder(os_type: str):
     folder = Path(PROJECT_ROOT_PATH, 'build', os_type)
-    os.makedirs(folder, exist_ok=True)
+    folder.mkdir(exist_ok=True)
     logger.info(f'Create {folder}')
     return folder
 
 
 def create_bin_folder(os_type: str):
     folder = Path(PROJECT_ROOT_PATH, 'bin', os_type)
-    os.makedirs(folder, exist_ok=True)
+    folder.mkdir(exist_ok=True)
     logger.info(f'Create {folder}')
     return folder
 
@@ -66,13 +65,11 @@ def unzip_file(src_file: str, dst_folder: str):
     logger.info(f'Unzip {src_file}')
     with zipfile.ZipFile(src_file, 'r') as zf:
         for member in zf.namelist():
-            filename = os.path.basename(member)
+            filename = Path(memeber).name
             if not filename:  # skip directories
                 continue
 
-            source = zf.open(member)
-            target = open(os.path.join(dst_folder, filename), 'wb')
-            with source, target:
+            with zf.open(memeber) as source, Path(dst_folder, filename).open('wb') as target:
                 shutil.copyfileobj(source, target)
 
 
@@ -82,29 +79,23 @@ def untar_file(src_file: str, dst_folder: str):
         for member in tf.getmembers():
             if member.isreg():  # skip if the TarInfo is not files
                 # remove the path by reset it
-                member.name = os.path.basename(member.name)
+                member.name = Path(member.name).name
                 tf.extract(member, dst_folder)  # extract
 
 
 def unarchive_each_files(src_folder: str, dst_folder: str):
-    logger.info(f'Unarchive')
-    files = glob.glob(f'{src_folder}/*.zip') + \
-        glob.glob(f'{src_folder}/*.tar.gz')
+    logger.info('Unarchive')
 
-    for file in files:
-        if file.split('.')[-1] == 'zip':
-            unzip_file(file, dst_folder)
-        elif file.split('.')[-1] == 'gz':
-            untar_file(file, dst_folder)
-        else:
-            logger.info('file type error')
+    for file in Path(src_folder).glob('*.zip'):
+        unzip_file(file, dst_folder)
+    for file in Path(src_folder).glob('*.tar.gz'):
+        untar_file(file, dst_folder)
 
 
 def remove_patten_files(dst_folder: str, pattern: str = 'tonlib*'):
-    files = glob.glob(f'{dst_folder}/{pattern}')
-    for file in files:
+    for file in Path(dst_folder).glob(pattern):
         logger.info(f'Remove {file}')
-        os.remove(file)
+        file.unlink()
 
 
 def download(os_type: str):

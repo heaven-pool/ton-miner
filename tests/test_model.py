@@ -1,11 +1,9 @@
 # # -*- coding: utf-8 -*-
-# import os
-# from pathlib import Path
-
 from app.libs import models
 
 
 def test_job_models():
+    """Check if 'create' are different between JobSchema objects"""
     obj1 = models.JobSchema(
         job_id=661422, pool_wallet='EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq',
         complexity='1906156863157627903919216023423475890402376096793739878410580',

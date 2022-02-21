@@ -12,8 +12,8 @@ from loguru import logger
 
 
 class Worker(threading.Thread):
-    def __init__(self, worker: models.GPUWorkerSchema, job_queue, result_queue,):
-        threading.Thread.__init__(self)
+    def __init__(self, worker: models.GPUWorkerSchema, job_queue, result_queue):
+        super().__init__(self)
         self.worker = worker
         self.job_queue = job_queue
         self.result_queue = result_queue
@@ -26,13 +26,14 @@ class Worker(threading.Thread):
 
     def bin_path(self):
         # get bin path and argument
-        power_argument = self.worker._cmd()
+        power_argument = self.worker._cmd
         miner_bin_path = utils.get_miner_bin_path(self.worker.gpu_device)
         power_cmd = shlex.split(f"{miner_bin_path} {power_argument}", posix=False)
         return power_cmd
 
     def run(self):
         while True:
+            # TODO while?
             if not self.job_queue.empty():
                 logger.debug(self.worker.gpu_device)
                 # get jobs
@@ -40,7 +41,7 @@ class Worker(threading.Thread):
                 self.worker._add_job(job)
                 self.process = subprocess.Popen(self.bin_path(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-                logger.info(f"=========== Miner is Running! ===========")
+                logger.info("=========== Miner is Running! ===========")
                 logger.info(f"Worker {job}")
                 logger.debug(self.bin_path())
                 hash_rate = ''
@@ -82,7 +83,7 @@ class Worker(threading.Thread):
 
 class JobManager(threading.Thread):
     def __init__(self, miner: models.MinerSchema, job_queue, result_queue, job_expiration):
-        threading.Thread.__init__(self)
+        super().__init__(self)
         self.miner = miner
         self.job_queue = job_queue
         self.result_queue = result_queue
@@ -93,26 +94,35 @@ class JobManager(threading.Thread):
         ts = datetime.now()
         while True:
             # get job
-            if (datetime.now()-ts).total_seconds() > self.job_expiration:
-                logger.debug(f"Job expiration")
-                while not self.job_queue.empty():
-                    self.job_queue.get()
-                for i in range(len(self.miner.devices)):
-                    job = sender.job(self.miner)
-                    if job:
-                        self.job_queue.put(job)
-                ts = datetime.now()
-            elif self.job_queue.qsize() < len(self.miner.devices):
-                logger.debug(f"Job amount is too low")
-                for i in range(self.job_queue.qsize(), len(self.miner.devices)):
+            is_expired = (datetime.now() - ts).total_seconds() > self.job_expiration
+            is_low_at_jobs = self.job_queue.qsize() < len(self.miner.devices)
+            if is_expired or is_low_at_jobs:
+                if is_expired:
+                    logger.debug("Job expiration")
+                    # Clear the queue
+                    # TODO set an event to stop workers from getting job, and then clear the queue
+                    while not self.job_queue.empty():
+                        self.job_queue.get()
+                    jobs_needed = len(self.miner.devices)
+                elif is_low_at_jobs:
+                    logger.debug("Job amount is too low")
+                    jobs_needed = len(self.miner.devices) - self.job_queue.qsize()
+                for _ in range(jobs_needed):
                     job = sender.job(self.miner)
                     if job:
                         self.job_queue.put(job)
                 ts = datetime.now()
 
             # submit
-            if self.result_queue.qsize() > 0:
-                for i in range(self.result_queue.qsize()):
+            # TODO
+            # while not self.result_queue.empty():
+            #     result = self.result_queue.get()
+            #     count = sender.submit(self.miner, result)
+            #     self.total_shares += count
+            #     logger.info(f"Result submit: {result}, shares: {self.total_shares}")
+            #     logger.debug(f"Job/Result in queue: {self.job_queue.qsize()}/{self.result_queue.qsize()}")
+            if not self.result_queue.empty():
+                for _ in range(self.result_queue.qsize()):
                     result = self.result_queue.get()
                     count = sender.submit(self.miner, result)
                     self.total_shares += count
@@ -124,14 +134,16 @@ class JobManager(threading.Thread):
 
 
 def create_job_manager(
-        miner: models.MinerSchema, job_queue: queue.Queue, result_queue: queue.Queue, job_expiration: int = 900):
+    miner: models.MinerSchema, job_queue: queue.Queue,
+    result_queue: queue.Queue, job_expiration: int = 900
+):
     job_mgr = JobManager(miner, job_queue, result_queue, job_expiration)
     job_mgr.setDaemon(True)
     job_mgr.start()
     return job_mgr
 
 
-def create_worker(miner: models.MinerSchema, job_queue: queue.Queue, result_queue: queue.Queue,):
+def create_worker(miner: models.MinerSchema, job_queue: queue.Queue, result_queue: queue.Queue):
     worker_pools = []
     workers = miner._create_wokers()
 

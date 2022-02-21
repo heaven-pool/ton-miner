@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-s
-import os
 import platform
 import time
 import uuid
 from pathlib import Path
 from typing import List, Optional
+from shlex import join
 
 from libs import utils
 from pydantic import BaseModel, Field
@@ -13,7 +13,7 @@ from typing_extensions import Annotated
 # Miner -> create GPUWorker
 # Job + GPUWorker -> JobResult
 
-APP_ROOT_PATH = Path(os.path.dirname(os.path.abspath(__file__))).parent
+APP_ROOT_PATH = Path(__file__).parent.resolve()
 
 
 class JobSchema(BaseModel):
@@ -49,10 +49,16 @@ class GPUWorkerSchema(BaseModel):
     computer_name: str
     computer_uuid: str
 
-    def _cmd(self):
-        cmd = f"-vv -g{self.gpu_id} -F{self.boost_factor} -t{self.timeout} "
-        cmd += f"{self.job.pool_wallet} {self.job.seed} {self.job.complexity} {self.job.iterations} "
-        cmd += f"{self.job.giver_address} {self.boc_name}"
+    @property
+    def _cmd(self) -> str:
+        cmd = join(
+            (
+                '-vv', f'-g{self.gpu_id}', f'-F{self.boost_factor}', f'-t{self.timeout}',
+                str(self.job.pool_wallet),
+                str(self.job.seed), str(self.job.complexity), str(self.job.iterations), str(self.job.giver_address),
+                str(self.boc_name),
+            )
+        )
         return cmd
 
     def _add_job(self, job: JobSchema) -> JobResultSchema:
@@ -83,14 +89,17 @@ class MinerSchema(BaseModel):
     gpus: List[str]
     workers: Optional[List[GPUWorkerSchema]]
 
+    # why not init?
     def _create_wokers(self) -> List[GPUWorkerSchema]:
-        self.workers = [GPUWorkerSchema(
-            gpu_id=gpu,
-            gpu_device=device,
-            miner_wallet=self.miner_wallet,
-            computer_name=self.computer_name,
-            computer_uuid=self.computer_uuid,
-            boc_name=str(Path(APP_ROOT_PATH, f"mined-{gpu}.boc")),)
-            for gpu, device in zip(self.gpus, self.devices)]
-
+        self.workers = [
+            GPUWorkerSchema(
+                gpu_id=gpu,
+                gpu_device=device,
+                miner_wallet=self.miner_wallet,
+                computer_name=self.computer_name,
+                computer_uuid=self.computer_uuid,
+                boc_name=str(Path(APP_ROOT_PATH, f"mined-{gpu}.boc")),
+            )
+            for gpu, device in zip(self.gpus, self.devices)
+        ]
         return self.workers
