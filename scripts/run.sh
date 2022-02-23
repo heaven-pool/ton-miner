@@ -20,7 +20,7 @@ build() {
     rm -rf ../bin ./dist ./build
     rm -rf ${FOLDER_NAME} ${ZIP_NAME}
 
-    mkdir -p ../bin/hiveos/assets/ ../bin/ubuntu18/assets/ ../bin/ubuntu20/assets/
+    mkdir -p ../bin/hiveos/ ../bin/ubuntu18/ ../bin/ubuntu20/
     cp -r ../config/* ../bin/
 
     poetry run pyinstaller --clean --onefile \
