@@ -1,4 +1,4 @@
-$URL = "https:\\ton-dev.heaven-pool.com"
+$URL = "https://ton.heaven-pool.com"
 $WALLET = "EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq"
 $VERSION = "0.1.0"
 $MINNER = "ton-heaven-pool-miner"
@@ -52,7 +52,7 @@ function py {
 }
 
 function bin {
-    .\bin\windows\miner --pools $URL $WALLET
+    .\bin\windows\miner.exe --pool $URL $WALLET
 }
 
 & $args[0]

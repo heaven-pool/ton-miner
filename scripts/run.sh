@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 VERSION=0.1.0
-URL=https://ton-dev.heaven-pool.com
+URL=https://ton.heaven-pool.com
 WALLET=EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq
 MINNER=ton-heaven-pool-miner
 OS_VERSION=hiveos
