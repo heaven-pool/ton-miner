@@ -32,18 +32,20 @@ build() {
 }
 
 zip () {
-    rm -rf ${FOLDER_NAME}*
-    mkdir -p ${FOLDER_NAME}
-    cp -r ./bin/hiveos ${FOLDER_NAME}-hiveos
-    cp -r ./bin/ubuntu18 ${FOLDER_NAME}-ubuntu18
-    cp -r ./bin/ubuntu20 ${FOLDER_NAME}-ubuntu20
-    pushd ${FOLDER_NAME}-hiveos
+    rm -rf release/${FOLDER_NAME}*
+    mkdir -p release/
+    mkdir -p release/${FOLDER_NAME}-hiveos
+    cp -r ./bin/hiveos release/${FOLDER_NAME}-hiveos/${FOLDER_NAME}
+    cp -r ./bin/ubuntu18 release/${FOLDER_NAME}-ubuntu18
+    cp -r ./bin/ubuntu20 release/${FOLDER_NAME}-ubuntu20
+
+    pushd release/${FOLDER_NAME}-hiveos
     tar -zcv -f ../${FOLDER_NAME}-hiveos.tar.gz *
     popd
-    pushd ${FOLDER_NAME}-ubuntu18
+    pushd release/${FOLDER_NAME}-ubuntu18
     tar -zcv -f ../${FOLDER_NAME}-ubuntu18.tar.gz *
     popd
-    pushd ${FOLDER_NAME}-ubuntu20
+    pushd release/${FOLDER_NAME}-ubuntu20
     tar -zcv -f ../${FOLDER_NAME}-ubuntu20.tar.gz *
     popd
 }
