@@ -4,7 +4,6 @@ import time
 import uuid
 from pathlib import Path
 from typing import List, Optional
-from shlex import join
 
 from libs import utils
 from pydantic import BaseModel, Field
