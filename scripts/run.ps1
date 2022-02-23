@@ -16,9 +16,9 @@ function build {
     Copy-Item -Recurse -Path .\config -Destination .\bin
 
     poetry run pyinstaller --clean --onefile `
-        --add-data "libs\*:libs" --add-data "assets\*:assets" `
+        --add-data "libs\*;libs" --add-data "assets\*;assets" `
         --name miner main.py
-    Copy-Item -Recurse -Path .\dist\miner -Destination ..\bin\windows\
+    Copy-Item -Recurse -Path .\dist\miner.exe -Destination ..\bin\windows\
 
     Pop-Location
 }
