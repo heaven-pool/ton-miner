@@ -56,7 +56,7 @@ pak() {
 release(){
     gh release create ${VERSION} \
         --notes "regular release" \
-        -t ${ZIP_NAME}-release \
+        -t ${FOLDER_NAME}-release \
         ${FOLDER_NAME}-hiveos.tar.gz \
         ${FOLDER_NAME}-ubuntu18.tar.gz \
         ${FOLDER_NAME}-ubuntu20.tar.gz \
