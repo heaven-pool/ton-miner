@@ -13,7 +13,6 @@ import pyopencl
 import requests
 from libs import config, runner
 from loguru import logger
-import shlex
 # for build binary by pyinstaller, you should put essential lib in entry file.
 
 

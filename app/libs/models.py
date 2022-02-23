@@ -51,14 +51,9 @@ class GPUWorkerSchema(BaseModel):
 
     @property
     def _cmd(self) -> str:
-        cmd = join(
-            (
-                '-vv', f'-g{self.gpu_id}', f'-F{self.boost_factor}', f'-t{self.timeout}',
-                str(self.job.pool_wallet),
-                str(self.job.seed), str(self.job.complexity), str(self.job.iterations), str(self.job.giver_address),
-                str(self.boc_name),
-            )
-        )
+        cmd = f"-vv -g{self.gpu_id} -F{self.boost_factor} -t{self.timeout} "
+        cmd += f"{self.job.pool_wallet} {self.job.seed} {self.job.complexity} {self.job.iterations} "
+        cmd += f"{self.job.giver_address} {self.boc_name}"
         return cmd
 
     def _add_job(self, job: JobSchema) -> JobResultSchema:
