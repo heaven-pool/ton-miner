@@ -1,54 +1,54 @@
-$URL = "https://ton-dev.heaven-pool.com"
+$URL = "https:\\ton-dev.heaven-pool.com"
 $WALLET = "EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq"
-$VERTION  = "0.1.0"
+$VERTION = "0.1.0"
 $MINNER = "ton-heaven-pool-miner"
-$OS_VERSION = "window"
+$OS_VERSION = "windows"
 $FOLDER_NAME = "$MINNER-$VERTION"
 $ZIP_NAME = "$FOLDER_NAME-$OS_VERSION"
-
 # need to mapping hive os folder definition - so use one more append name -${OS_VERSION}
 
-# function build {
-#     cd app/
+function build {
+    Push-Location -Path .\app\
 
-#     rm -r ../bin ./dist ./build
-#     rm -r $FOLDER_NAME $ZIP_NAME
+    Remove-Item -Recurse -Force -Path ..\bin .\dist .\build
 
-#     mkdir -p ../bin/window/assets/
-#     cp -r ../config/* ../bin/
+    New-Item -ItemType Directory -Path ..\bin\windows\
+    Copy-Item -Recurse -Path .\config -Destination .\bin
 
-#     poetry run pyinstaller --clean --onefile \
-#         --add-data "libs/*:libs" --add-data "assets/*:assets" \
-#         --name miner main.py
-#     cp ./dist/miner ../bin/window/assets/s
-# }
+    poetry run pyinstaller --clean --onefile `
+        --add-data "libs\*:libs" --add-data "assets\*:assets" `
+        --name miner main.py
+    Copy-Item -Recurse -Path .\dist\miner -Destination ..\bin\windows\
+}
 
-# function zip () {
-#     mkdir -p ${FOLDER_NAME}
-#     cp -r ./${MINNER}/ ${FOLDER_NAME}
-#     tar -zcv --exclude='.DS_Store' -f ${ZIP_NAME}.tar.gz ${FOLDER_NAME}
-# }
+function zip {
+    Remove-Item -Recurse -Path ".\$FOLDER_NAME" ".\$ZIP_NAME.zip"
+    New-Item -ItemType Directory -Path ".\$FOLDER_NAME"
 
-function pak() {
+    Copy-Item -Recurse -Path ".\$MINNER" -Destination ".\$FOLDER_NAME"
+    Compress-Archive -Path $(Get-ChildItem $FOLDER_NAME | ForEach-Object { $_.FullName }) -DestinationPath "$ZIP_NAME.zip"
+}
+
+function pak {
     build
     zip
 }
 
-function release(){
-    gh release create $VERTION -n regular release -t $ZIP_NAME-release $ZIP_NAME.zip -R git@github.com:heaven-pool/ton-miner.git
+function release {
+    gh release create $VERTION -n regular release -t $ZIP_NAME-release $ZIP_NAME.zip -R git@github.com:heaven-pool\ton-miner.git
 }
 
-function pak_release (){
+function pak_release {
     pak
     release
 }
 
 function py {
-    poetry run python ./app/main.py --debug --pool $URL $WALLET
+    poetry run python .\app\main.py --debug --pool $URL $WALLET
 }
 
 function bin {
-    ./bin/hiveos/miner --pools $URL $WALLET
+    .\bin\windows\miner --pools $URL $WALLET
 }
 
-release
+& $args[0]
