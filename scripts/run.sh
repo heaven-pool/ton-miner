@@ -59,9 +59,9 @@ release(){
     gh release create ${VERSION} \
         --notes "regular release" \
         -t ${FOLDER_NAME}-release \
-        ${FOLDER_NAME}-hiveos.tar.gz \
-        ${FOLDER_NAME}-ubuntu18.tar.gz \
-        ${FOLDER_NAME}-ubuntu20.tar.gz \
+        release/${FOLDER_NAME}-hiveos.tar.gz \
+        release/${FOLDER_NAME}-ubuntu18.tar.gz \
+        release/${FOLDER_NAME}-ubuntu20.tar.gz \
         -R git@github.com:heaven-pool/ton-miner.git
 }
 

@@ -25,9 +25,8 @@ function build {
 
 function zip {
     Remove-Item -Recurse -Path ".\$FOLDER_NAME" ".\$ZIP_NAME.zip"
-
-    Copy-Item -Recurse -Path .\bin\windows\ -Destination ".\$FOLDER_NAME"
-    Compress-Archive -Path $(Get-ChildItem $FOLDER_NAME | ForEach-Object { $_.FullName }) -DestinationPath "$ZIP_NAME.zip"
+    Copy-Item -Recurse -Path .\bin\windows\ -Destination ".\release\$FOLDER_NAME"
+    Compress-Archive -Path $(Get-ChildItem ".\release\$FOLDER_NAME" | ForEach-Object { $_.FullName }) -DestinationPath ".\release\$ZIP_NAME.zip"
 }
 
 function pak {
@@ -39,7 +38,7 @@ function release {
     gh release create $VERSION `
         -n regular release `
         -t "$ZIP_NAME-release" `
-        "$ZIP_NAME.zip" `
+        ".\release\$ZIP_NAME.zip" `
         -R git@github.com:heaven-pool\ton-miner.git
 }
 
