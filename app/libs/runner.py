@@ -13,7 +13,7 @@ from loguru import logger
 
 class Worker(threading.Thread):
     def __init__(self, worker: models.GPUWorkerSchema, job_queue, result_queue):
-        super().__init__(self)
+        super(Worker, self).__init__()
         self.worker = worker
         self.job_queue = job_queue
         self.result_queue = result_queue
@@ -83,7 +83,7 @@ class Worker(threading.Thread):
 
 class JobManager(threading.Thread):
     def __init__(self, miner: models.MinerSchema, job_queue, result_queue, job_expiration):
-        super().__init__(self)
+        super(JobManager, self).__init__()
         self.miner = miner
         self.job_queue = job_queue
         self.result_queue = result_queue
