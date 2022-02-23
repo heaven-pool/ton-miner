@@ -1,4 +1,5 @@
 miner/
+ton-heaven-pool-miner-*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
