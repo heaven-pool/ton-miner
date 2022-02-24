@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=0.1.0
+VERSION=0.1.1
 URL=https://ton.heaven-pool.com
 WALLET=EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq
 MINNER=ton-heaven-pool-miner
