@@ -2,7 +2,7 @@
 
 ## Flightsheet setup
 
-![alt text](https://github.com/heaven-pool/ton-miner/blob/0.1.0/docs/img/flightsheet.png)
+![alt text](https://github.com/heaven-pool/ton-miner/blob/dev/docs/img/flightsheet.png?raw=true)
 
 1. COIN: TON
 2. Wallet: Select your toncoin wallet
@@ -25,4 +25,4 @@
    - Apply Changes
 5. Name：ton-heaven-pool
 
-   ![alt text](https://github.com/heaven-pool/ton-miner/blob/0.1.0/docs/img/flightsheet-configuration.png)
+   ![alt text](https://github.com/heaven-pool/ton-miner/blob/dev/docs/img/flightsheet-configuration.png?raw=true)
