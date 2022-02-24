@@ -1,6 +1,6 @@
 setup(
     name="ton-minner",
-    version="0.1.0",
+    version="0.1.2",
     description="Minner",
     long_description=README,
     long_description_content_type="text/markdown",

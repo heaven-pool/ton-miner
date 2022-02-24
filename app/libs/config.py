@@ -7,7 +7,7 @@ import pyopencl as cl
 from libs import models
 from loguru import logger
 
-VERSION: str = "0.1.0"
+VERSION: str = "0.1.2"
 
 
 def arg_parser(run_args):

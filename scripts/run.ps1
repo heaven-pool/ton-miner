@@ -1,6 +1,6 @@
 $URL = "https://ton.heaven-pool.com"
 $WALLET = "EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq"
-$VERSION = "0.1.0"
+$VERSION = "0.1.2"
 $MINNER = "ton-heaven-pool-miner"
 $OS_VERSION = "windows"
 $FOLDER_NAME = "$MINNER-$VERSION"
