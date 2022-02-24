@@ -2,7 +2,7 @@
 
 ## 飛行儀表板設定步驟
 
-![alt text](https://github.com/qwedsazxc78/ton-heaven-pool-miner/blob/main/image/%E9%A3%9B%E8%A1%8C%E5%84%80%E8%A1%A8%E6%9D%BF%E8%A8%AD%E5%AE%9A.png?raw=true)
+![alt text](https://github.com/heaven-pool/ton-miner/blob/0.1.0/docs/img/flightsheet.png)
 
 1. COIN: ton
 2. 錢包: 選擇你的對應貨幣錢包
@@ -25,4 +25,4 @@
    - 點選保存設定
 5. 名稱：ton-heaven-pool
 
-   ![alt text](https://github.com/qwedsazxc78/ton-heaven-pool-miner/blob/main/image/%E9%A3%9B%E8%A1%8C%E5%84%80%E8%A1%A8%E6%9D%BF%E8%A8%AD%E5%AE%9A-%E5%AE%A2%E8%A3%BD%E5%8C%96%E8%A8%AD%E5%AE%9A.png?raw=true)
+   ![alt text](https://github.com/heaven-pool/ton-miner/blob/0.1.0/docs/img/flightsheet-configuration.png)
