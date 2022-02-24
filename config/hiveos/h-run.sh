@@ -8,4 +8,4 @@
 CUSTOM_LOG_BASEDIR=`dirname "$CUSTOM_LOG_BASENAME"`
 [[ ! -d $CUSTOM_LOG_BASEDIR ]] && mkdir -p $CUSTOM_LOG_BASEDIR
 
-./miner-linux --stats $(< $CUSTOM_CONFIG_FILENAME) 2>&1 | tee $CUSTOM_LOG_BASENAME.log
+./miner --stats $(< $CUSTOM_CONFIG_FILENAME) 2>&1 $CUSTOM_TEMPLATE | tee $CUSTOM_LOG_BASENAME.log
