@@ -1,21 +1,41 @@
-# ton-minner
+# Heaven-Pool ton-minner
 
-## archi
+Miner from [Heaven-Pool.com](https://ton.heaven-pool.com/)
 
-- device manager
-- job manager
-- workers
-- argument config
+# Instruction
 
-## argument
+## Hive OS Configuration
 
-1. stat
-2. log level
-3. pool
-4. wallet
+Installation URL: go to [releases](https://github.com/heaven-pool/ton-miner/releases), copy the link of any `hiveos` file.
 
-## cmd
+- Wallet and worker template: `%WAL%`
+- Pool URL: https://ton.heaven-pool.com
+- Note: The hashing algorithm will show up as darkcoin in the panel, although it is not actually.
 
-python miner.py --pool https://ton-dev.heaven-pool.com EQDv9eExabxeFmiPigOE_NscTo_SXB9IwDXz975hPWjO_cGq
+### Hive OS Tutorial
 
-- https://ton.heaven-pool.com
+- [Hive OS - 中文教學程序](https://github.com/heaven-pool/ton-miner/blob/master/docs/hiveos-chinese.md)
+- [Hive OS - Englist Tutorial](https://github.com/heaven-pool/ton-miner/blob/master/docs/hiveos-eng.md)
+
+## Windows / Ubuntu Configuration
+
+Download the latest release of our miner at https://github.com/heaven-pool/ton-miner/releases , then run the corresponding command according to your operating system.
+
+How to start
+
+``` sh
+# Windows
+miner.exe https://next.ton-pool.club <your_wallet>
+
+# Linux
+./miner https://next.ton-pool.club <your_wallet>
+
+# Hive OS
+configure by flight sheet
+```
+### Window / Ubuntu Tutorial
+
+- [Window - 中文教學程序](https://github.com/heaven-pool/ton-miner/blob/master/docs/window-chinese.md)
+- [Window - Englist Tutorial](https://github.com/heaven-pool/ton-miner/blob/master/docs/window-eng.md)
+- [Ubuntu - 中文教學程序](https://github.com/heaven-pool/ton-miner/blob/master/docs/ubuntu-chinese.md)
+- [Ubuntu - Englist Tutorial](https://github.com/heaven-pool/ton-miner/blob/master/docs/ubuntu-eng.md)
