@@ -25,10 +25,10 @@ How to start
 
 ``` sh
 # Windows
-miner.exe https://next.ton-pool.club <your_wallet>
+miner.exe https://ton.heaven-pool.com <your_wallet>
 
 # Linux
-./miner https://next.ton-pool.club <your_wallet>
+./miner https://ton.heaven-pool.com <your_wallet>
 
 # Hive OS
 configure by flight sheet
